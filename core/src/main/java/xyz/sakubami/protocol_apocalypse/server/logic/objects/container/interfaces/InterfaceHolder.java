@@ -9,7 +9,7 @@ public abstract class InterfaceHolder extends ItemHolder {
     private final InterfaceT interfaceT;
 
     public InterfaceHolder(ObjectType texture, String id, InterfaceT interfaceT) {
-        super(texture, id);
+        super(texture);
         this.interfaceT = interfaceT;
     }
 

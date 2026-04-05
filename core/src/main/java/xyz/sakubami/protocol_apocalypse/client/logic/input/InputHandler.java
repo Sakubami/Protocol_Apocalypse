@@ -5,10 +5,10 @@ import com.badlogic.gdx.Input;
 public class InputHandler {
 
     public static void handle(Input input) {
-        input.isKeyJustPressed()
     }
 
     private void interact() {
+        // local prediction
         // right click
         // send player input packet to server
     }

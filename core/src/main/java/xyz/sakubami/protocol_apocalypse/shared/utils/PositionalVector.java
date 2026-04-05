@@ -1,0 +1,7 @@
+package xyz.sakubami.protocol_apocalypse.shared.utils;
+
+public interface PositionalVector<T> {
+    T subtract(T subtractor);
+    T add(T adder);
+    String toString();
+}

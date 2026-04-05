@@ -9,5 +9,5 @@ public class Configuration {
     public static int getDefaultChunkSize() { return 16; }
     public static int getDefaultTileSize() { return 32; }
     public static int getDefaultBatchSize() { return 3; }
-    public static UUID getClientPlayerUUID() { return UUID.fromString("sakubami"); }
+    public static UUID getClientPlayerUUID() { return UUID.fromString("cdfb8e00-b36e-448e-ae0c-0830e4a5fef5"); }
  }

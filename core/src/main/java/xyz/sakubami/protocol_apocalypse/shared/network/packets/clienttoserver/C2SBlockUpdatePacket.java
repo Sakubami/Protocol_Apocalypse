@@ -1,4 +1,4 @@
-package xyz.sakubami.protocol_apocalypse.shared.network.packets;
+package xyz.sakubami.protocol_apocalypse.shared.network.packets.clienttoserver;
 
 import xyz.sakubami.protocol_apocalypse.shared.network.Packet;
 import xyz.sakubami.protocol_apocalypse.shared.network.packets.handlers.PacketHandler;

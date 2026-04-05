@@ -1,9 +1,11 @@
-package xyz.sakubami.protocol_apocalypse.server.logic.worlds;
+package xyz.sakubami.protocol_apocalypse.server.logic.world;
 
 import xyz.sakubami.protocol_apocalypse.server.logic.chunks.ChunkManager;
 import xyz.sakubami.protocol_apocalypse.server.logic.chunks.WorldGenerator;
+import xyz.sakubami.protocol_apocalypse.server.logic.world.entities.livingentity.Player;
 import xyz.sakubami.protocol_apocalypse.server.saving.data.Serializable;
 import xyz.sakubami.protocol_apocalypse.server.saving.data.WorldData;
+import xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate.GameStateBuilder;
 
 import java.util.*;
 
@@ -18,18 +20,21 @@ public class World implements Serializable<WorldData> {
         this.name = name;
         this.seed = System.currentTimeMillis();
         this.uuid = UUID.randomUUID();
-        System.out.println(uuid + "UUID LOL");
 
         chunkManager = new ChunkManager(new WorldGenerator(seed));
     }
 
-    public void tick() {
-        chunkManager.handleBatches(this);
+    public GameStateBuilder tick(Collection<Player> players, GameStateBuilder builder) {
+        return chunkManager.handleBatches(this, players, builder);
     }
 
     @Override
     public WorldData toData() {
-        return null;
+        WorldData data = new WorldData();
+        data.seed = seed;
+        data.uuid = uuid;
+        data.name = name;
+        return data;
     }
 
     @Override
@@ -37,6 +42,10 @@ public class World implements Serializable<WorldData> {
         this.seed = data.seed;
         this.uuid = data.uuid;
         this.name = data.name;
+    }
+
+    public void shutdown() {
+        chunkManager.shutdown();
     }
 
     public UUID getUuid() { return this.uuid; }

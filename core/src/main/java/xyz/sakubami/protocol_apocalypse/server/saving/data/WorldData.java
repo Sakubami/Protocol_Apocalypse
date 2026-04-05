@@ -1,6 +1,6 @@
 package xyz.sakubami.protocol_apocalypse.server.saving.data;
 
-import xyz.sakubami.protocol_apocalypse.server.logic.worlds.World;
+import xyz.sakubami.protocol_apocalypse.server.logic.world.World;
 
 import java.util.UUID;
 

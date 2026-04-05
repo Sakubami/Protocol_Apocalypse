@@ -2,14 +2,18 @@ package xyz.sakubami.protocol_apocalypse.server.logic.chunks;
 
 import com.google.gson.Gson;
 import xyz.sakubami.protocol_apocalypse.server.saving.Saviour;
-import xyz.sakubami.protocol_apocalypse.server.logic.worlds.entities.Entity;
-import xyz.sakubami.protocol_apocalypse.server.logic.worlds.entities.livingentity.Player;
+import xyz.sakubami.protocol_apocalypse.server.logic.world.entities.Entity;
+import xyz.sakubami.protocol_apocalypse.server.logic.world.entities.livingentity.Player;
 import xyz.sakubami.protocol_apocalypse.server.saving.data.ChunkBatch;
 import xyz.sakubami.protocol_apocalypse.server.saving.data.SerializedChunk;
 import xyz.sakubami.protocol_apocalypse.server.saving.data.SerializedEntity;
+import xyz.sakubami.protocol_apocalypse.shared.Configuration;
+import xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate.ChunkState;
+import xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate.EntityState;
+import xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate.GameStateBuilder;
 import xyz.sakubami.protocol_apocalypse.shared.utils.Coordinates;
-import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2i;
-import xyz.sakubami.protocol_apocalypse.server.logic.worlds.World;
+import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2f;
+import xyz.sakubami.protocol_apocalypse.server.logic.world.World;
 
 import java.util.*;
 
@@ -19,12 +23,14 @@ import java.util.*;
 public class ChunkManager {
     private final Gson gson = new Gson();
     private final WorldGenerator generator;
-    private final int CHUNK_SIZE = 16;
-    private final int BATCH_SIZE = 3;
+    private final int CHUNK_SIZE = Configuration.getDefaultChunkSize();
+    private final int BATCH_SIZE = Configuration.getDefaultBatchSize();
 
-    private final Map<Vector2i, Chunk> chunks;
-    private final Map<Vector2i, ChunkBatch> batches;
+    private final Map<Vector2f, Chunk> chunks;
+    private final Map<Vector2f, ChunkBatch> batches;
     private final Map<UUID, Entity> entities;
+
+    private GameStateBuilder builder;
 
     public ChunkManager(WorldGenerator generator) {
         this.generator = generator;
@@ -34,7 +40,7 @@ public class ChunkManager {
     }
 
     public void shutdown() {
-        for(Vector2i v : batches.keySet()) {
+        for(Vector2f v : batches.keySet()) {
             unloadBatch(v);
             System.out.println("SHUTDOWN");
         }
@@ -43,36 +49,39 @@ public class ChunkManager {
     /**
      * should load the chunkbatches around every player connected to the world
      */
-    public void handleBatches(World world) {
-        Set<Vector2i> loadQueue = new HashSet<>();
-        Set<Vector2i> unloadQueue = new HashSet<>(batches.keySet());
-        List<Player> players = world.getOnlinePlayers();
+    public GameStateBuilder handleBatches(World world, Collection<Player> players, GameStateBuilder builder) {
+        this.builder = builder;
 
-        Set<Vector2i> occupiedBatches = new HashSet<>();
+        Set<Vector2f> loadQueue = new HashSet<>();
+        Set<Vector2f> unloadQueue = new HashSet<>(batches.keySet());
+
+        Set<Vector2f> occupiedBatches = new HashSet<>();
         for (Player player : players) {
             occupiedBatches.add(Coordinates.getChunkBatch(player));
         }
 
-        for(Vector2i currentBatch : occupiedBatches) {
+        for(Vector2f currentBatch : occupiedBatches) {
             for (int dx = -1; dx <= 1; dx++) {
                 for (int dy = -1; dy <= 1; dy++) {
-                    Vector2i neighbor = new Vector2i(currentBatch.x() + dx, currentBatch.y() + dy);
+                    Vector2f neighbor = new Vector2f(currentBatch.x() + dx, currentBatch.y() + dy);
                     loadQueue.add(neighbor);
                     unloadQueue.remove(neighbor);
                 }
             }
         }
 
-        for (Vector2i pos : loadQueue) {
+        for (Vector2f pos : loadQueue) {
             if (!batches.containsKey(pos)) {
                 System.out.println("loading + " + pos);
                 loadBatch(world, pos);
             }
         }
 
-        for (Vector2i pos : unloadQueue) {
+        for (Vector2f pos : unloadQueue) {
             unloadBatch(pos);
         }
+
+        return builder;
     }
 
     /**
@@ -80,31 +89,35 @@ public class ChunkManager {
      * puts empty chunks inside the batch on generation until saving for performace reasons
      * @param loc
      */
-    private void loadBatch(World world, Vector2i loc) {
+    private void loadBatch(World world, Vector2f loc) {
         String path = world.getDirectory() + "/batches/" + loc.toString();
 
-        ChunkBatch batch = Saviour.get().loadData(path, ChunkBatch.class);
+        ChunkBatch batch = Saviour.loadData(path, ChunkBatch.class);
         if (batch == null)
             batch = new ChunkBatch();
 
         if (batch.chunks.isEmpty()) {
-            int chunkX = loc.x() * 3;
-            int chunkY = loc.y() * 3;
-            for(int i = chunkX; i <= chunkX + 2; i++) {
-                for(int i2 = chunkY; i2 <= chunkY + 2; i2++) {
-                    Vector2i v = new Vector2i(i, i2);
+            float chunkX = loc.x() * 3;
+            float chunkY = loc.y() * 3;
+            for(float i = chunkX; i <= chunkX + 2; i++) {
+                for(float i2 = chunkY; i2 <= chunkY + 2; i2++) {
+                    Vector2f v = new Vector2f(i, i2);
                     Chunk chunk = new Chunk(CHUNK_SIZE);
-                    batch.chunks.put(v.toString(), chunk.toData());
                     chunk.generateTiles(generator, v);
+                    batch.chunks.put(v.toString(), chunk.toData());
                     this.chunks.put(v, chunk);
+
+                    builder.addChunk(v, new ChunkState(chunk));
                 }
             }
         } else {
             for (Map.Entry<String, SerializedChunk> entry : batch.chunks.entrySet()) {
-                Vector2i chunkPos = Vector2i.fromString(entry.getKey());
+                Vector2f chunkPos = Vector2f.fromString(entry.getKey());
                 Chunk chunk = new Chunk(CHUNK_SIZE);
                 chunk.readData(entry.getValue());
                 this.chunks.put(chunkPos, chunk);
+
+                builder.addChunk(chunkPos, new ChunkState(chunk));
             }
         }
 
@@ -112,8 +125,9 @@ public class ChunkManager {
             for (SerializedEntity data : batch.entities.values()) {
                 Entity entity = Entity.createFromData(data);
                 entities.put(entity.getUuid(), entity);
-            }
 
+                builder.updateEntity(new EntityState(entity));
+            }
 
         batch.entities = new HashMap<>();
         this.batches.put(loc, batch);
@@ -124,33 +138,39 @@ public class ChunkManager {
      * im keeping the loadedchunks in a separate list for uhm reasons
      * @param loc position of the batch
      */
-    private void unloadBatch(Vector2i loc) {
+    private void unloadBatch(Vector2f loc) {
         ChunkBatch newBatch = new ChunkBatch();
         newBatch.chunks = new HashMap<>();
         newBatch.entities = new HashMap<>();
         newBatch.name = loc.toString();
 
         for (String v : batches.get(loc).chunks.keySet()) {
-            Vector2i chunkPos = Vector2i.fromString(v);
+            Vector2f chunkPos = Vector2f.fromString(v);
             Chunk chunk = chunks.get(chunkPos);
             newBatch.chunks.put(chunkPos.toString(), chunk.toData());
             chunks.remove(chunkPos);
+
+
+            System.out.println("TRYING TO REMOVE CHUNK");
+            builder.removeChunk(chunkPos);
         }
 
         for (Map.Entry<UUID, Entity> entry : entities.entrySet()) {
-            Vector2i pos = Coordinates.getChunkBatch(entry.getValue());
-            Vector2i distance = pos.subtract(loc);
+            Vector2f pos = Coordinates.getChunkBatch(entry.getValue());
+            Vector2f distance = pos.subtract(loc);
             if  (distance.x() > 0 || distance.y() > 0)
                 continue;
             newBatch.entities.put(entry.getKey(), entry.getValue().toData());
             entities.remove(entry.getKey());
+
+            builder.removeEntity(entry.getKey());
         }
 
-        Saviour.get().saveWorldData(newBatch);
+        Saviour.saveWorldData(newBatch);
         batches.remove(loc);
     }
 
-    public Map<Vector2i, Chunk> getChunks() { return chunks; }
+    public Map<Vector2f, Chunk> getChunks() { return chunks; }
     public Map<UUID, Entity> getEntities() { return this.entities; }
 
 }

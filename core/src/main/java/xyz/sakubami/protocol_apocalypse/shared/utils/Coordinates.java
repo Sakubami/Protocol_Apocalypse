@@ -1,6 +1,6 @@
 package xyz.sakubami.protocol_apocalypse.shared.utils;
 
-import xyz.sakubami.protocol_apocalypse.server.logic.worlds.entities.Entity;
+import xyz.sakubami.protocol_apocalypse.server.logic.world.entities.Entity;
 import xyz.sakubami.protocol_apocalypse.shared.Configuration;
 
 public class Coordinates {
@@ -8,15 +8,15 @@ public class Coordinates {
     private static final int CHUNK_SIZE = 16;
     private static final int BATCH_SIZE = 3;
 
-    public static Vector2i getChunkBatch(Entity entity) {
+    public static Vector2f getChunkBatch(Entity entity) {
         int batchX = (int) Math.floor(((entity.getPos().x() / TILE_SIZE) / CHUNK_SIZE) / BATCH_SIZE);
         int batchY = (int) Math.floor(((entity.getPos().y() / TILE_SIZE) / CHUNK_SIZE) / BATCH_SIZE);
-        return new Vector2i(batchX, batchY);
+        return new Vector2f(batchX, batchY);
     }
 
-    public static Vector2i getChunk(Vector2i pos) {
+    public static Vector2f getChunk(Vector2i pos) {
         int chunkX = pos.x() / Configuration.getDefaultChunkSize();
         int chunkY = pos.y() / Configuration.getDefaultChunkSize();
-        return new Vector2i(chunkX, chunkY);
+        return new Vector2f(chunkX, chunkY);
     }
 }

@@ -14,7 +14,7 @@ public class ChunkBatch implements Serialized<ChunkBatch> {
 
     @Override
     public ChunkBatch createObject() {
-        return null;
+        return this;
     }
 
     @Override

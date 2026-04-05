@@ -1,5 +1,9 @@
-package xyz.sakubami.protocol_apocalypse.shared.network.packets;
+package xyz.sakubami.protocol_apocalypse.shared.network.packets.clienttoserver;
 
+import xyz.sakubami.protocol_apocalypse.ProtocolApocalypse;
+import xyz.sakubami.protocol_apocalypse.server.logic.world.entities.livingentity.Player;
+import xyz.sakubami.protocol_apocalypse.shared.Configuration;
+import xyz.sakubami.protocol_apocalypse.shared.network.Connection;
 import xyz.sakubami.protocol_apocalypse.shared.network.Packet;
 import xyz.sakubami.protocol_apocalypse.shared.network.packets.handlers.PacketHandler;
 import xyz.sakubami.protocol_apocalypse.shared.network.packets.handlers.ServerPacketHandler;
@@ -7,52 +11,44 @@ import xyz.sakubami.protocol_apocalypse.shared.network.packets.handlers.ServerPa
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.Socket;
 import java.util.UUID;
 
-public class C2SPlayerMovePacket implements Packet {
-    public float x;
-    public float y;
-    public float vx;
-    public float vy;
-    public UUID uuid;
+public class C2SPlayerConnectPacket implements Packet {
 
-    public C2SPlayerMovePacket(UUID uuid, float x, float y, float vx, float vy) {
+    public UUID uuid;
+    public Connection connection;
+
+    public C2SPlayerConnectPacket(UUID uuid) {
         this.uuid = uuid;
-        this.x = x;
-        this.y = y;
-        this.vx = vx;
-        this.vy = vy;
     }
 
-    public C2SPlayerMovePacket() {}
+    public C2SPlayerConnectPacket() {}
 
     @Override
     public void write(DataOutputStream out) throws IOException {
         out.writeUTF(uuid.toString());
-        out.writeFloat(x);
-        out.writeFloat(y);
-        out.writeFloat(vx);
-        out.writeFloat(vy);
     }
 
     @Override
     public void read(DataInputStream in) throws IOException {
         this.uuid = UUID.fromString(in.readUTF());
-        this.x = in.readFloat();
-        this.y = in.readFloat();
-        this.vx = in.readFloat();
-        this.vy = in.readFloat();
     }
 
     @Override
     public void execute(PacketHandler handler) {
         if (!(handler instanceof ServerPacketHandler))
             return;
-        ((ServerPacketHandler) handler).world().getOnlinePlayer(uuid)
+        ((ServerPacketHandler) handler).server().connectPlayer(connection, new Player(uuid));
+    }
+
+    public void addConnection(Connection connection) {
+        this.connection = connection;
     }
 
     @Override
     public int getId() {
-        return 0;
+        return 4;
     }
 }

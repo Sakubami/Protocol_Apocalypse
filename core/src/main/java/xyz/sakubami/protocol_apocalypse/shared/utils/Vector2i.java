@@ -6,13 +6,14 @@ package xyz.sakubami.protocol_apocalypse.shared.utils;
  * @param x coordinate
  * @param y coordinate
  */
-public record Vector2i(int x, int y) {
+public record Vector2i(int x, int y) implements PositionalVector<Vector2i> {
 
     public static Vector2i fromString(String v) {
         String[] split = v.split("%");
         return new Vector2i(Integer.parseInt(split[0]), Integer.parseInt(split[1]));
     }
 
+    @Override
     public String toString() {
         return x + "%" + y;
     }
@@ -27,6 +28,10 @@ public record Vector2i(int x, int y) {
         int x1 = x + adder.x();
         int y1 = y + adder.y();
         return new Vector2i(x1, y1);
+    }
+
+    public Vector2f transform() {
+        return new Vector2f(x, y);
     }
 }
 

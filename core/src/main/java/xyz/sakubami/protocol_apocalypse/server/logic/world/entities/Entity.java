@@ -1,4 +1,4 @@
-package xyz.sakubami.protocol_apocalypse.server.logic.worlds.entities;
+package xyz.sakubami.protocol_apocalypse.server.logic.world.entities;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import xyz.sakubami.protocol_apocalypse.server.saving.data.Serializable;
@@ -14,16 +14,18 @@ import java.util.function.Supplier;
 public abstract class Entity implements Serializable<SerializedEntity> {
     private Vector2f pos;
     private final EntityType type;
-    private final TextureRegion texture;
-    private final String id;
     private UUID uuid;
 
-    public Entity(EntityType textureT, String id) {
+    public Entity(EntityType type) {
         this.pos = new Vector2f(0, 0);
-        this.type = textureT;
-        this.texture = TextureManager.get().getEntityTexture(textureT);
-        this.id = id;
+        this.type = type;
         this.uuid = UUID.randomUUID();
+    }
+
+    public Entity(EntityType type, UUID uuid) {
+        this.pos = new Vector2f(0,0);
+        this.type = type;
+        this.uuid = uuid;
     }
 
     @Override
@@ -31,7 +33,6 @@ public abstract class Entity implements Serializable<SerializedEntity> {
         SerializedEntity data = new SerializedEntity();
         data.pos = pos.toString();
         data.type = type;
-        data.id = id;
         data.uuid = uuid;
         return data;
     }
@@ -61,5 +62,5 @@ public abstract class Entity implements Serializable<SerializedEntity> {
     public UUID getUuid() { return this.uuid; }
     public Vector2f getPos() { return pos; }
     public void setPos(Vector2f pos) { this.pos = pos; }
-    public TextureRegion getTexture() { return this.texture; }
+    public EntityType getType() { return this.type; }
 }

@@ -1,4 +1,4 @@
-package xyz.sakubami.protocol_apocalypse.shared.network.packets;
+package xyz.sakubami.protocol_apocalypse.shared.network.packets.servertoclient;
 
 import xyz.sakubami.protocol_apocalypse.shared.network.Packet;
 import xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate.GameState;
@@ -10,7 +10,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 
 public class S2CGameStatePacket implements Packet {
-    private GameState state;
+    public GameState state;
 
     public S2CGameStatePacket() {}
 
@@ -20,12 +20,12 @@ public class S2CGameStatePacket implements Packet {
 
     @Override
     public void write(DataOutputStream out) throws IOException {
-
+        state.write(out);
     }
 
     @Override
     public void read(DataInputStream in) throws IOException {
-
+        this.state = GameState.read(in);
     }
 
     @Override

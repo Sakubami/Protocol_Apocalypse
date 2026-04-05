@@ -5,6 +5,6 @@ import xyz.sakubami.protocol_apocalypse.shared.types.ObjectType;
 
 public class Tree extends GameObject {
     public Tree() {
-        super(ObjectType.TREE, "TREE");
+        super(ObjectType.TREE);
     }
 }

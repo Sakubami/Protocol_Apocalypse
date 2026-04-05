@@ -5,9 +5,8 @@ import xyz.sakubami.protocol_apocalypse.client.Client;
 import xyz.sakubami.protocol_apocalypse.client.logic.input.InputHandler;
 import xyz.sakubami.protocol_apocalypse.server.logic.objects.ObjectRegistry;
 import xyz.sakubami.protocol_apocalypse.client.screens.TitleScreen;
-import xyz.sakubami.protocol_apocalypse.server.saving.Saviour;
-import xyz.sakubami.protocol_apocalypse.server.logic.worlds.WorldManager;
-import xyz.sakubami.protocol_apocalypse.server.logic.worlds.entities.EntityRegistry;
+import xyz.sakubami.protocol_apocalypse.server.logic.world.WorldManager;
+import xyz.sakubami.protocol_apocalypse.server.logic.world.entities.EntityRegistry;
 import xyz.sakubami.protocol_apocalypse.shared.utils.DirectoryHelper;
 
 public class ProtocolApocalypse extends Game {
@@ -20,7 +19,6 @@ public class ProtocolApocalypse extends Game {
         EntityRegistry.init();
         DirectoryHelper.init();
         WorldManager.init();
-        Saviour.init();
 
         client = new Client();
         inputHandler = new InputHandler();
@@ -41,6 +39,7 @@ public class ProtocolApocalypse extends Game {
     @Override
     public void dispose() {
         super.dispose();
+        client.disconnect();
     }
 
     public Client getClient() { return this.client; }

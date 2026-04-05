@@ -1,4 +1,4 @@
-package xyz.sakubami.protocol_apocalypse.shared.network.packets;
+package xyz.sakubami.protocol_apocalypse.shared.network.packets.servertoclient;
 
 import xyz.sakubami.protocol_apocalypse.client.logic.user_interfaces.InterfaceHelper;
 import xyz.sakubami.protocol_apocalypse.client.logic.user_interfaces.InterfaceT;

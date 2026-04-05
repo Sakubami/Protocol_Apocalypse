@@ -14,6 +14,8 @@ import xyz.sakubami.protocol_apocalypse.client.logic.interactions.InteractionMan
 import xyz.sakubami.protocol_apocalypse.client.rendering.ChunkRenderer;
 import xyz.sakubami.protocol_apocalypse.client.rendering.EntityRenderer;
 import xyz.sakubami.protocol_apocalypse.ProtocolApocalypse;
+import xyz.sakubami.protocol_apocalypse.client.rendering.WorldRenderer;
+import xyz.sakubami.protocol_apocalypse.server.Server;
 import xyz.sakubami.protocol_apocalypse.shared.Configuration;
 
 import java.io.IOException;
@@ -23,8 +25,7 @@ public class GameScreen implements Screen {
 
     private final OrthographicCamera camera;
     private final ScreenViewport viewport;
-    private final ChunkRenderer chunkRenderer;
-    private final EntityRenderer entityRenderer;
+    private final WorldRenderer renderer;
     private final SpriteBatch batch;
     private final InteractionManager interactionManager;
     private final InputHandler inputHandler;
@@ -48,16 +49,17 @@ public class GameScreen implements Screen {
         interactionManager = new InteractionManager(client);
         inputHandler = game.getInputHandler();
 
-        try {
-            client.hostLocal(25556);
-        } catch (IOException ignored) {};
-
-        chunkRenderer = new ChunkRenderer(batch, loadedWorld.getChunkManager(), Configuration.getDefaultTileSize());
-        entityRenderer = new EntityRenderer(batch, loadedWorld.getChunkManager());
+        renderer = new WorldRenderer();
 
         viewport = new ScreenViewport(camera); // 1 world unit = 1 pixel
         viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
         game.setScreen(this);
+
+        try {
+            client.hostLocal(25556);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        };
     }
 
     @Override
@@ -67,13 +69,6 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float v) {
-        /*
-            handleInput(delta);
-            connection.tick(); // read server packets
-            renderWorld();
-         */
-
-        interactionManager.update();
         client.update();
 
         float speed = 1000 * Gdx.graphics.getDeltaTime(); // pixels per second
@@ -83,21 +78,19 @@ public class GameScreen implements Screen {
         if (Gdx.input.isKeyPressed(Input.Keys.A)) camera.position.x -= speed;
         if (Gdx.input.isKeyPressed(Input.Keys.D)) camera.position.x += speed;
 
-        if (Gdx.input.isKeyPressed(Input.Keys.Q)) camera.zoom -= Gdx.graphics.getDeltaTime();
-        if (Gdx.input.isKeyPressed(Input.Keys.E)) camera.zoom += Gdx.graphics.getDeltaTime();
+        if (Gdx.input.isKeyPressed(Input.Keys.Q)) camera.zoom -= (Gdx.graphics.getDeltaTime() * 3);
+        if (Gdx.input.isKeyPressed(Input.Keys.E)) camera.zoom += (Gdx.graphics.getDeltaTime() * 3);
 
-        camera.zoom = MathUtils.clamp(camera.zoom, 0.5f, 4f);
+        camera.zoom = MathUtils.clamp(camera.zoom, 0.5f, 20f);
 
         camera.position.x = Math.round(camera.position.x);
         camera.position.y = Math.round(camera.position.y);
 
         camera.update();
-
         ScreenUtils.clear(0, 0, 0, 1); // clear to black
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
-        chunkRenderer.render();
-        entityRenderer.render();
+        renderer.render(batch, client.getCurrentWorldData());
         batch.end();
     }
 

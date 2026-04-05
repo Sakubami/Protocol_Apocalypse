@@ -11,8 +11,8 @@ import java.util.HashMap;
 public abstract class ItemHolder extends GameObject {
     private final HashMap<Integer, ItemStack> items;
 
-    public ItemHolder(ObjectType texture, String id) {
-        super(texture, id);
+    public ItemHolder(ObjectType texture) {
+        super(texture);
         this.items = new HashMap<>();
     }
 

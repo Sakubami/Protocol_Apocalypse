@@ -107,7 +107,6 @@ public class ChunkManager {
                     batch.chunks.put(v.toString(), chunk.toData());
                     this.chunks.put(v, chunk);
 
-                    chunk.addObject(new Vector2f(0, 0), new Tree());
                     builder.addChunk(v, new ChunkState(chunk));
                 }
             }
@@ -150,7 +149,6 @@ public class ChunkManager {
             newBatch.chunks.put(chunkPos.toString(), chunk.toData());
             chunks.remove(chunkPos);
 
-            System.out.println("TRYING TO REMOVE CHUNK");
             builder.removeChunk(chunkPos);
         }
 

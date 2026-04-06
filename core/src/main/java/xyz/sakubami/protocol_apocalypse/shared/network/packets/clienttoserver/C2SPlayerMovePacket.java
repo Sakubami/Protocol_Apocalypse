@@ -18,10 +18,10 @@ public class C2SPlayerMovePacket implements Packet {
     public float vy;
     public UUID uuid;
 
-    public C2SPlayerMovePacket(UUID uuid, float x, float y) {
+    public C2SPlayerMovePacket(UUID uuid, Vector2f pos) {
         this.uuid = uuid;
-        this.x = x;
-        this.y = y;
+        this.x = pos.x();
+        this.y = pos.y();
     }
 
     public C2SPlayerMovePacket() {}
@@ -45,8 +45,8 @@ public class C2SPlayerMovePacket implements Packet {
         if (!(handler instanceof ServerPacketHandler h))
             return;
         Player player = h.server().getOnlinePlayer(uuid);
-        player.setPos(new Vector2f(x, y));
-        System.out.println("updated player position: " + x + ", " + y);
+        player.setPos(player.getPos().add(new Vector2f(x, y)));
+        System.out.println("updated player position: " + player.getPos().x() / 32 + " " + player.getPos().y() / 32);
     }
 
     @Override

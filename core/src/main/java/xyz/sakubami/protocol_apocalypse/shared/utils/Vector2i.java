@@ -18,6 +18,21 @@ public record Vector2i(int x, int y) implements PositionalVector<Vector2i> {
         return x + "%" + y;
     }
 
+    @Override
+    public float length() {
+        return 0;
+    }
+
+    @Override
+    public Vector2i normalized() {
+        return null;
+    }
+
+    @Override
+    public Vector2i mul(float scalar) {
+        return null;
+    }
+
     public Vector2i subtract(Vector2i subtractor) {
         int x1 = x - subtractor.x();
         int y1 = y - subtractor.y();

@@ -20,6 +20,8 @@ public record WorldRenderer() {
     public void render(SpriteBatch batch, ClientWorld world) {
         List<State> states = new ArrayList<>(world.getEntities().values());
 
+        states.addAll(world.getPlayers().values());
+
         for (Map.Entry<Vector2f, ChunkState> chunks : world.getChunks().entrySet()) {
             states.addAll(chunks.getValue().objects.values());
 
@@ -43,15 +45,13 @@ public record WorldRenderer() {
             .toList();
 
         for (State state : sorted) {
+            System.out.println("states: " + states.size());
             Vector2f pos = state.getPos();
             TextureRegion texture;
-            System.out.println(state);
             Type type = state.getType();
 
-            if (type instanceof ObjectType) {
+            if (type instanceof ObjectType)
                 texture = TextureManager.get().getObjectTexture((ObjectType) type);
-                System.out.println("currently rendering OBJECT: " + type);
-            }
             else {
                 texture = TextureManager.get().getEntityTexture((EntityType) type);
                 System.out.println("currently rendering entitytexture: " + type);

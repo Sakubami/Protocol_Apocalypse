@@ -46,7 +46,6 @@ public class Server {
                     Socket clientSocket = serverSocket.accept();
                     Connection connection = new Connection(clientSocket, true);
                     clients.add(connection);
-                    System.out.println("clients online currently: " + clients.size());
                     System.out.println("Client connected: " + clientSocket.getInetAddress());
                 } catch (IOException e) {
                     if(running) e.printStackTrace();
@@ -72,7 +71,7 @@ public class Server {
                 continue;
             }
             c.tick(handler); // read & execute packets
-            System.out.println("server");
+            System.out.println("---");
         }
 
         if (onlinePlayers.isEmpty())

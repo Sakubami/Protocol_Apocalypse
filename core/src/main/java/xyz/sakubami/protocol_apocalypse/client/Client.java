@@ -23,7 +23,7 @@ public class Client {
 
     public Client() {
         this.state = new ClientWorld();
-        this.prediction = new Prediction();
+        this.prediction = new Prediction(this);
     }
 
     public void hostLocal(int port) throws IOException {
@@ -42,7 +42,7 @@ public class Client {
 
     public void update() {
         connection.tick(new ClientPacketHandler(this));
-        System.out.println("client");
+        System.out.println("###");
     }
 
     public void sendPacket(Packet packet) {

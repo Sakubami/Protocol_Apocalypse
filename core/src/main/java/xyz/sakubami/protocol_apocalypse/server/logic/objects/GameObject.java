@@ -7,19 +7,18 @@ import xyz.sakubami.protocol_apocalypse.server.saving.data.SerializedObject;
 import xyz.sakubami.protocol_apocalypse.client.rendering.textures.TextureManager;
 import xyz.sakubami.protocol_apocalypse.shared.types.ObjectType;
 import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2f;
-import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2i;
 
 import java.util.HashMap;
 import java.util.function.Supplier;
 
 public abstract class GameObject implements Serializable<SerializedObject> {
-    private Vector2f pos;
+    private Vector2f tilePos;
     private final int width;
     private final int height;
     private final ObjectType type;
 
     public GameObject(ObjectType textureT) {
-        this.pos = new Vector2f(0,0);
+        this.tilePos = new Vector2f(0,0);
         this.type = textureT;
         TextureRegion texture = TextureManager.get().getObjectTexture(textureT);
         this.width = texture.getRegionWidth();
@@ -29,14 +28,14 @@ public abstract class GameObject implements Serializable<SerializedObject> {
     @Override
     public SerializedObject toData() {
         SerializedObject data = new SerializedObject();
-        data.pos = pos.toString();
+        data.pos = tilePos.toString();
         data.type = type;
         return data;
     }
 
     @Override
     public void readData(SerializedObject data) {
-        this.pos = Vector2f.fromString(data.pos);
+        this.tilePos = Vector2f.fromString(data.pos);
     }
 
     private static final HashMap<ObjectType, Supplier<? extends GameObject>> registry = new HashMap<>();
@@ -56,9 +55,9 @@ public abstract class GameObject implements Serializable<SerializedObject> {
     }
 
     public ObjectType getType() { return type; }
-    public Vector2f getPos() { return pos; }
+    public Vector2f getTilePos() { return tilePos; }
     public int getWidth() { return width; }
     public int getHeight() { return height; }
-    public Rectangle getBoundingBox() { return new Rectangle(pos.x(), pos.y(), width, height); }
+    public Rectangle getBoundingBox() { return new Rectangle(tilePos.x(), tilePos.y(), width, height); }
     public void update(float deltaT) {}
 }

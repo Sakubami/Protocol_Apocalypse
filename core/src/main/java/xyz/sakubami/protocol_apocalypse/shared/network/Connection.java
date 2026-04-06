@@ -11,10 +11,12 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Connection implements Runnable{
 
+    private final UUID uuid;
     private final boolean isServer;
     private final Socket socket;
     private final DataInputStream in;
@@ -25,6 +27,7 @@ public class Connection implements Runnable{
 
 
     public Connection(Socket socket, boolean isServer) throws IOException {
+        this.uuid = UUID.randomUUID();
         this.socket = socket;
         this.isServer = isServer;
         this.in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
@@ -56,6 +59,7 @@ public class Connection implements Runnable{
                 if (packet == null) continue;
                 if (packet instanceof C2SPlayerConnectPacket) {
                     ((C2SPlayerConnectPacket) packet).addConnection(this);
+                    System.out.println("RECEIVED PLAYER CONNECT PACKET");
                 }
                 packet.read(in);
                 incoming.add(packet);
@@ -81,6 +85,7 @@ public class Connection implements Runnable{
     public boolean isAlive() { return running && !socket.isClosed(); }
 
     /** Getters for input/output streams if needed */
+    public UUID getUUID() { return this.uuid; }
     public DataInputStream getInputStream() { return in; }
     public DataOutputStream getOutputStream() { return out; }
     public InetAddress getID() { return socket.getInetAddress(); }

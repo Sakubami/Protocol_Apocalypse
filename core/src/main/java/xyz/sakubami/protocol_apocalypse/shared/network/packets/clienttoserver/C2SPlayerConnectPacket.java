@@ -38,9 +38,9 @@ public class C2SPlayerConnectPacket implements Packet {
 
     @Override
     public void execute(PacketHandler handler) {
-        if (!(handler instanceof ServerPacketHandler))
+        if (!(handler instanceof ServerPacketHandler h))
             return;
-        ((ServerPacketHandler) handler).server().connectPlayer(connection, new Player(uuid));
+        h.server().connectPlayer(connection, new Player(uuid));
     }
 
     public void addConnection(Connection connection) {

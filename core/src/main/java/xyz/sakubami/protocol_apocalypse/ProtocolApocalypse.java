@@ -3,6 +3,7 @@ package xyz.sakubami.protocol_apocalypse;
 import com.badlogic.gdx.Game;
 import xyz.sakubami.protocol_apocalypse.client.Client;
 import xyz.sakubami.protocol_apocalypse.client.logic.input.InputHandler;
+import xyz.sakubami.protocol_apocalypse.client.rendering.textures.TextureManager;
 import xyz.sakubami.protocol_apocalypse.server.logic.objects.ObjectRegistry;
 import xyz.sakubami.protocol_apocalypse.client.screens.TitleScreen;
 import xyz.sakubami.protocol_apocalypse.server.logic.world.WorldManager;
@@ -19,6 +20,7 @@ public class ProtocolApocalypse extends Game {
         EntityRegistry.init();
         DirectoryHelper.init();
         WorldManager.init();
+        TextureManager.init();
 
         client = new Client();
         inputHandler = new InputHandler();

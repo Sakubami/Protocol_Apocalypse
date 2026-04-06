@@ -18,12 +18,10 @@ public class C2SPlayerMovePacket implements Packet {
     public float vy;
     public UUID uuid;
 
-    public C2SPlayerMovePacket(UUID uuid, float x, float y, float vx, float vy) {
+    public C2SPlayerMovePacket(UUID uuid, float x, float y) {
         this.uuid = uuid;
         this.x = x;
         this.y = y;
-        this.vx = vx;
-        this.vy = vy;
     }
 
     public C2SPlayerMovePacket() {}
@@ -33,8 +31,6 @@ public class C2SPlayerMovePacket implements Packet {
         out.writeUTF(uuid.toString());
         out.writeFloat(x);
         out.writeFloat(y);
-        out.writeFloat(vx);
-        out.writeFloat(vy);
     }
 
     @Override
@@ -42,15 +38,13 @@ public class C2SPlayerMovePacket implements Packet {
         this.uuid = UUID.fromString(in.readUTF());
         this.x = in.readFloat();
         this.y = in.readFloat();
-        this.vx = in.readFloat();
-        this.vy = in.readFloat();
     }
 
     @Override
     public void execute(PacketHandler handler) {
-        if (!(handler instanceof ServerPacketHandler))
+        if (!(handler instanceof ServerPacketHandler h))
             return;
-        Player player = ((ServerPacketHandler) handler).server().getOnlinePlayer(uuid);
+        Player player = h.server().getOnlinePlayer(uuid);
         player.setPos(new Vector2f(x, y));
         System.out.println("updated player position: " + x + ", " + y);
     }

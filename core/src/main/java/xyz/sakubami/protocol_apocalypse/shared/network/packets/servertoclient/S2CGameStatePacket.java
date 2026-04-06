@@ -30,9 +30,9 @@ public class S2CGameStatePacket implements Packet {
 
     @Override
     public void execute(PacketHandler handler) {
-        if (!(handler instanceof ClientPacketHandler))
+        if (!(handler instanceof ClientPacketHandler h))
             return;
-        ((ClientPacketHandler) handler).client().applyState(state);
+        h.client().applyState(state);
     }
 
     @Override

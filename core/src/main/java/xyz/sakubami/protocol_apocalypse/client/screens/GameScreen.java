@@ -70,6 +70,7 @@ public class GameScreen implements Screen {
     @Override
     public void render(float v) {
         client.update();
+        inputHandler.handle(Gdx.input, client);
 
         float speed = 1000 * Gdx.graphics.getDeltaTime(); // pixels per second
 
@@ -78,16 +79,18 @@ public class GameScreen implements Screen {
         if (Gdx.input.isKeyPressed(Input.Keys.A)) camera.position.x -= speed;
         if (Gdx.input.isKeyPressed(Input.Keys.D)) camera.position.x += speed;
 
-        if (Gdx.input.isKeyPressed(Input.Keys.Q)) camera.zoom -= (Gdx.graphics.getDeltaTime() * 3);
-        if (Gdx.input.isKeyPressed(Input.Keys.E)) camera.zoom += (Gdx.graphics.getDeltaTime() * 3);
+        if (Gdx.input.isKeyPressed(Input.Keys.Q)) camera.zoom -= 1;
+        if (Gdx.input.isKeyPressed(Input.Keys.E)) camera.zoom += 1;
 
         camera.zoom = MathUtils.clamp(camera.zoom, 0.5f, 20f);
 
-        camera.position.x = Math.round(camera.position.x);
-        camera.position.y = Math.round(camera.position.y);
+        camera.position.x = Math.round(client.getPlayerPos().x());
+        camera.position.y = Math.round(client.getPlayerPos().y());
 
         camera.update();
+
         ScreenUtils.clear(0, 0, 0, 1); // clear to black
+
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         renderer.render(batch, client.getCurrentWorldData());

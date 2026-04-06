@@ -1,6 +1,7 @@
 package xyz.sakubami.protocol_apocalypse.server.logic.chunks;
 
 import com.google.gson.Gson;
+import xyz.sakubami.protocol_apocalypse.server.logic.objects.normal.Tree;
 import xyz.sakubami.protocol_apocalypse.server.saving.Saviour;
 import xyz.sakubami.protocol_apocalypse.server.logic.world.entities.Entity;
 import xyz.sakubami.protocol_apocalypse.server.logic.world.entities.livingentity.Player;
@@ -72,7 +73,6 @@ public class ChunkManager {
 
         for (Vector2f pos : loadQueue) {
             if (!batches.containsKey(pos)) {
-                System.out.println("loading + " + pos);
                 loadBatch(world, pos);
             }
         }
@@ -107,6 +107,7 @@ public class ChunkManager {
                     batch.chunks.put(v.toString(), chunk.toData());
                     this.chunks.put(v, chunk);
 
+                    chunk.addObject(new Vector2f(0, 0), new Tree());
                     builder.addChunk(v, new ChunkState(chunk));
                 }
             }
@@ -129,7 +130,6 @@ public class ChunkManager {
                 builder.updateEntity(new EntityState(entity));
             }
 
-        batch.entities = new HashMap<>();
         this.batches.put(loc, batch);
     }
 
@@ -149,7 +149,6 @@ public class ChunkManager {
             Chunk chunk = chunks.get(chunkPos);
             newBatch.chunks.put(chunkPos.toString(), chunk.toData());
             chunks.remove(chunkPos);
-
 
             System.out.println("TRYING TO REMOVE CHUNK");
             builder.removeChunk(chunkPos);

@@ -1,7 +1,7 @@
 package xyz.sakubami.protocol_apocalypse.client;
 
 import xyz.sakubami.protocol_apocalypse.client.logic.ClientWorld;
-import xyz.sakubami.protocol_apocalypse.client.logic.input.InputHandler;
+import xyz.sakubami.protocol_apocalypse.client.logic.Prediction;
 import xyz.sakubami.protocol_apocalypse.shared.Configuration;
 import xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate.GameState;
 import xyz.sakubami.protocol_apocalypse.server.Server;
@@ -9,19 +9,21 @@ import xyz.sakubami.protocol_apocalypse.shared.network.Connection;
 import xyz.sakubami.protocol_apocalypse.shared.network.Packet;
 import xyz.sakubami.protocol_apocalypse.shared.network.packets.clienttoserver.C2SPlayerConnectPacket;
 import xyz.sakubami.protocol_apocalypse.shared.network.packets.handlers.ClientPacketHandler;
+import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2f;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.UUID;
 
 public class Client {
     private Connection connection;
     private Server localServer;
     private final ClientWorld state;
-    private final InputHandler inputHandler;
+    private Prediction prediction;
 
     public Client() {
         this.state = new ClientWorld();
-        this.inputHandler = new InputHandler();
+        this.prediction = new Prediction();
     }
 
     public void hostLocal(int port) throws IOException {
@@ -40,7 +42,7 @@ public class Client {
 
     public void update() {
         connection.tick(new ClientPacketHandler(this));
-        System.out.println("CLIENT GAMETICK HAPPENED");
+        System.out.println("client");
     }
 
     public void sendPacket(Packet packet) {
@@ -60,6 +62,11 @@ public class Client {
 
     public boolean isHosting() { return localServer != null; }
     public void applyState(GameState state) { this.state.applyState(state);}
-    public InputHandler getInputHandler() { return this.inputHandler; }
     public ClientWorld getCurrentWorldData() { return this.state; }
+    public Vector2f getPlayerPos() {
+        if (state.getPlayers().isEmpty())
+            return new Vector2f(0, 0);
+        return state.getPlayers().values().stream().filter(p -> p.uuid.equals(Configuration.getClientPlayerUUID())).findFirst().get().getPos();
+    }
+    public Prediction getPrediction() { return prediction; }
 }

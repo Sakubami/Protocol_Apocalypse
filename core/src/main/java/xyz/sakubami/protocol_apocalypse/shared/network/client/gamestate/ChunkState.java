@@ -8,6 +8,7 @@ import xyz.sakubami.protocol_apocalypse.shared.types.TileType;
 import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2f;
 import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2i;
 
+import javax.sound.midi.SysexMessage;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -50,12 +51,16 @@ public class ChunkState {
 
         // Chunks
         if (objects.isEmpty()) {
-            out.writeInt(-999);
+            out.writeInt(-99);
+            System.out.println("OBJECT ARE EMPTY");
             return;
         }
 
         out.writeInt(objects.size());
+        System.out.println("OBJECTS SIZE: " + objects.size());
         for (Map.Entry<Vector2f, ObjectState> entry : objects.entrySet()) {
+            System.out.println("DOING SOMETHING WITH OBJECTS OR SOMETHING");
+            System.out.println("WRITTEN OBJECT TO DATA" + entry.getValue().pos);
             out.writeFloat(entry.getKey().x());
             out.writeFloat(entry.getKey().y());
             entry.getValue().write(out);
@@ -74,11 +79,13 @@ public class ChunkState {
 
         // Chunks
         int objectCount = in.readInt();
-        if (objectCount == -999)
+        if (objectCount == -99)
             return state;
         for (int i = 0; i < objectCount; i++) {
+            float x = in.readFloat();
+            float y = in.readFloat();
             ObjectState object = ObjectState.read(in);
-            state.objects.put(object.pos, object);
+            state.objects.put(new Vector2f(x, y), object);
         }
 
         return state;

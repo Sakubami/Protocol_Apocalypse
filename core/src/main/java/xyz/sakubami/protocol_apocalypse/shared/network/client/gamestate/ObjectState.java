@@ -1,19 +1,13 @@
 package xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate;
 
 import xyz.sakubami.protocol_apocalypse.server.logic.objects.GameObject;
-import xyz.sakubami.protocol_apocalypse.server.saving.data.SerializedEntity;
 import xyz.sakubami.protocol_apocalypse.server.saving.data.SerializedObject;
-import xyz.sakubami.protocol_apocalypse.shared.types.EntityType;
 import xyz.sakubami.protocol_apocalypse.shared.types.ObjectType;
-import xyz.sakubami.protocol_apocalypse.shared.types.Type;
-import xyz.sakubami.protocol_apocalypse.shared.utils.PositionalVector;
 import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2f;
-import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2i;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.UUID;
 
 public class ObjectState implements State {
     public SerializedObject object;
@@ -28,20 +22,20 @@ public class ObjectState implements State {
     }
 
     public ObjectState(GameObject data) {
-        this.pos = data.getPos();
+        this.pos = data.getTilePos();
         this.type = data.getType();
     }
 
     public ObjectState(GameObject data, boolean remove) {
         this.remove = remove;
-        this.pos = data.getPos();
+        this.pos = data.getTilePos();
         this.type = data.getType();
     }
 
     public void write(DataOutputStream out) throws IOException {
         out.writeBoolean(remove);
         out.writeFloat(pos.x());
-        out.writeFloat  (pos.y());
+        out.writeFloat(pos.y());
         out.writeInt(type.getId());
     }
 
@@ -54,5 +48,5 @@ public class ObjectState implements State {
     }
 
     @Override public Vector2f getPos() { return pos; }
-    @Override public ObjectType getType() { return object.type; }
+    @Override public ObjectType getType() { return type; }
 }

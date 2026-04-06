@@ -11,7 +11,8 @@ import xyz.sakubami.protocol_apocalypse.shared.types.TileType;
 import java.util.EnumMap;
 
 public class TextureManager {
-    private static final TextureManager instance = new TextureManager();
+    public static void init() { instance = new TextureManager(); }
+    private static TextureManager instance;
     public static TextureManager get() { return instance; }
 
     private final TextureAtlas atlas;

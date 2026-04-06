@@ -4,12 +4,13 @@ import xyz.sakubami.protocol_apocalypse.shared.types.TileType;
 import xyz.sakubami.protocol_apocalypse.server.logic.chunks.Chunk;
 import xyz.sakubami.protocol_apocalypse.shared.Configuration;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class SerializedChunk implements Serialized<Chunk> {
     public TileType[] tiles;
     public int size;
-    public Map<String, SerializedObject> objects;
+    public Map<String, SerializedObject> objects = new HashMap<>();
 
     public SerializedChunk() {}
 

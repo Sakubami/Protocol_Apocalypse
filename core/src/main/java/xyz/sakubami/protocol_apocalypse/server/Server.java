@@ -6,13 +6,13 @@ import xyz.sakubami.protocol_apocalypse.server.saving.Saviour;
 import xyz.sakubami.protocol_apocalypse.server.logic.world.WorldManager;
 import xyz.sakubami.protocol_apocalypse.shared.network.Connection;
 import xyz.sakubami.protocol_apocalypse.shared.network.Packet;
-import xyz.sakubami.protocol_apocalypse.shared.network.ProxySession;
+import xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate.EntityState;
 import xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate.GameStateBuilder;
 import xyz.sakubami.protocol_apocalypse.shared.network.packets.handlers.ServerPacketHandler;
+import xyz.sakubami.protocol_apocalypse.shared.network.validation.Validation;
 import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2f;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
@@ -25,14 +25,14 @@ public class Server {
     private final ServerPacketHandler handler = new ServerPacketHandler(this);
     private World world;
     private Saviour saviour;
+    private final Validation validation = new Validation();
 
+    private final Queue<Player> pendingPlayers = new LinkedList<>();
     private final Map<Connection, Player> connectedPlayers = new HashMap<>();
     private final Map<UUID, Player> onlinePlayers = new HashMap<>();
     private final Map<UUID, Player> offlinePlayers = new HashMap<>();
-    public Server() {
-        Player player = new Player();
-        this.onlinePlayers.put(player.getUuid(), player);
-    }
+
+    public Server() {}
 
     public void start(int port) throws IOException {
         running = true;
@@ -46,6 +46,7 @@ public class Server {
                     Socket clientSocket = serverSocket.accept();
                     Connection connection = new Connection(clientSocket, true);
                     clients.add(connection);
+                    System.out.println("clients online currently: " + clients.size());
                     System.out.println("Client connected: " + clientSocket.getInetAddress());
                 } catch (IOException e) {
                     if(running) e.printStackTrace();
@@ -71,15 +72,21 @@ public class Server {
                 continue;
             }
             c.tick(handler); // read & execute packets
-            System.out.println("server ticked player -> " + connectedPlayers.get(c).getName());
+            System.out.println("server");
         }
 
-        Player player = onlinePlayers.values().stream().filter(p -> p.getName().equals("sakubami")).findFirst().get();
-        Vector2f move = new Vector2f(20, 0);
-        player.setPos(player.getPos().add(move));
-        System.out.println("x: " + player.getTilePos().x() + " y: " + player.getTilePos().y());
+        if (onlinePlayers.isEmpty())
+            return;
 
         GameStateBuilder stateBuilder = new GameStateBuilder();
+        validation.refresh();
+
+        if (!pendingPlayers.isEmpty())
+            stateBuilder.updateEntity(new EntityState(pendingPlayers.poll()));
+
+        for (Map.Entry<UUID, Vector2f> entry : validation.fetchPlayerMovementCorrection().entrySet()) {
+            this.onlinePlayers.get(entry.getKey()).setPos(entry.getValue());
+        }
 
         broadcast(world.tick(onlinePlayers.values(), stateBuilder).compile());
         saviour.tick();
@@ -87,6 +94,7 @@ public class Server {
 
     private void disconnectClient(Connection c) {
         c.disconnect();
+        System.out.println("DISCONNECTED CLIENT!!!");
     }
 
     public void setupWorld(String name) {
@@ -116,9 +124,11 @@ public class Server {
     public void updatePlayer(Player player) { this.onlinePlayers.replace(player.getUuid(), player); }
     public void connectPlayer(Connection adress, Player player) {
         this.onlinePlayers.put(player.getUuid(), player);
-        this.connectedPlayers.put(this.clients.stream().filter(c -> c.equals(adress)).findFirst().get(), player);
+        this.connectedPlayers.put(this.clients.stream().filter(c -> c.getUUID().equals(adress.getUUID())).findFirst().get(), player);
+        this.pendingPlayers.add(player);
     }
     public void disconnectPlayer(UUID uuid) { this.onlinePlayers.remove(uuid); }
     public Player getOnlinePlayer(UUID uuid) { return this.onlinePlayers.get(uuid); }
     public Player getOfflinePlayer(UUID uuid) { return this.offlinePlayers.get(uuid); }
+    public Validation getValidation() { return this.validation; }
 }

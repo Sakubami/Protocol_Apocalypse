@@ -20,8 +20,6 @@ public record WorldRenderer() {
     public void render(SpriteBatch batch, ClientWorld world) {
         List<State> states = new ArrayList<>(world.getEntities().values());
 
-        System.out.println("STATES SIZE AT START OF RENDERING -> " + states.size());
-
         for (Map.Entry<Vector2f, ChunkState> chunks : world.getChunks().entrySet()) {
             states.addAll(chunks.getValue().objects.values());
 
@@ -40,25 +38,26 @@ public record WorldRenderer() {
             }
         }
 
-        System.out.println("SIZE 1 --------------> " + states.size());
-
         List<State> sorted = states.stream()
             .sorted(Comparator.comparing((State state) -> state.getPos().y()).reversed())
             .toList();
 
-        System.out.println("SIZE 2 --------------> " + states.size());
-
-
         for (State state : sorted) {
-            System.out.println(state.getPos());
             Vector2f pos = state.getPos();
             TextureRegion texture;
+            System.out.println(state);
             Type type = state.getType();
 
-            if (type instanceof ObjectType)
-                texture = TextureManager.get().getObjectTexture((ObjectType) state.getType());
-            else
-                texture = TextureManager.get().getEntityTexture((EntityType) state.getType());
+            if (type instanceof ObjectType) {
+                texture = TextureManager.get().getObjectTexture((ObjectType) type);
+                System.out.println("currently rendering OBJECT: " + type);
+            }
+            else {
+                texture = TextureManager.get().getEntityTexture((EntityType) type);
+                System.out.println("currently rendering entitytexture: " + type);
+                System.out.println("at position: " + pos);
+            }
+
             batch.draw(texture, pos.x(), pos.y());
         }
     }

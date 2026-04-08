@@ -1,12 +1,12 @@
 package xyz.sakubami.protocol_apocalypse.client.logic;
 
-import xyz.sakubami.protocol_apocalypse.server.logic.world.entities.livingentity.Player;
 import xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate.ChunkState;
 import xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate.EntityState;
 import xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate.GameState;
+import xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate.ObjectState;
 import xyz.sakubami.protocol_apocalypse.shared.types.EntityType;
+import xyz.sakubami.protocol_apocalypse.shared.utils.Coordinates;
 import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2f;
-import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2i;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,6 +39,14 @@ public class ClientWorld {
             }
             chunks.put(pos, entry.getValue());
         }
+    }
+
+    public void placeBlock(Vector2f pos, ObjectState state) {
+        System.out.println("ABSOLUTE POS: " + pos);
+        state.pos = Coordinates.getChunkObjectPos(pos);
+        System.out.println("CHUNK POS: " + Coordinates.getChunkPos(pos));
+        System.out.println("TILE POS IN CHUNK: " + Coordinates.getChunkObjectPos(pos));
+        this.chunks.get(Coordinates.getChunkPos(pos)).addObject(state);
     }
 
     public Map<UUID, EntityState> getEntities() { return  entities; }

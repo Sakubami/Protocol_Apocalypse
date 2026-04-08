@@ -42,7 +42,6 @@ public class Client {
 
     public void update() {
         connection.tick(new ClientPacketHandler(this));
-        System.out.println("###");
     }
 
     public void sendPacket(Packet packet) {

@@ -1,6 +1,7 @@
 package xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate;
 
 import xyz.sakubami.protocol_apocalypse.shared.network.packets.servertoclient.S2CGameStatePacket;
+import xyz.sakubami.protocol_apocalypse.shared.utils.Coordinates;
 import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2f;
 
 import java.awt.*;
@@ -13,9 +14,11 @@ public class GameStateBuilder {
     private final Map<UUID, EntityState> entities = new HashMap<>();
 
     public void updateObject(ObjectState object) {
-        Vector2f pos = object.pos;
+        Vector2f pos = Coordinates.getChunkPos(object.pos);
         ChunkState state = chunks.computeIfAbsent(pos, k -> new ChunkState(false));
         chunks.get(pos).addObject(object);
+
+        System.out.println("ADDED OBJECT AT " + Coordinates.getChunkObjectPos(object.pos) + " TO CHUNK AND THE CHUNK NOW HAS " +  chunks.get(pos).objects.size() + " OBJECTS");
     }
 
     public void addChunk(Vector2f pos, ChunkState state) {

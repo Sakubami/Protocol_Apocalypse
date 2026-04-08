@@ -19,4 +19,16 @@ public class Coordinates {
         int chunkY = pos.y() / Configuration.getDefaultChunkSize();
         return new Vector2f(chunkX, chunkY);
     }
+
+    public static Vector2f getChunkObjectPos(Vector2f absolute) {
+        return new Vector2f((float) Math.floor((absolute.x() % 512) / 32), (float) Math.floor((absolute.y() % 512) / 32));
+    }
+
+    public static Vector2f getChunkPos(Vector2f absolute) {
+        return new Vector2f((float) Math.floor(absolute.x() / 512), (float) Math.floor(absolute.y() / 512));
+    }
+
+    public static Vector2f getTilePos(Vector2f absolute) {
+        return new Vector2f((float) Math.floor(absolute.x() / 32), (float) Math.floor(absolute.y() / 32));
+    }
 }

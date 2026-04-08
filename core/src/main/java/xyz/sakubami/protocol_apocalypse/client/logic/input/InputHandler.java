@@ -1,25 +1,21 @@
 package xyz.sakubami.protocol_apocalypse.client.logic.input;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import xyz.sakubami.protocol_apocalypse.ProtocolApocalypse;
-import xyz.sakubami.protocol_apocalypse.client.Client;
+import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.math.Vector3;
 import xyz.sakubami.protocol_apocalypse.client.logic.Prediction;
-import xyz.sakubami.protocol_apocalypse.client.logic.action.Action;
-import xyz.sakubami.protocol_apocalypse.client.screens.GameScreen;
-import xyz.sakubami.protocol_apocalypse.shared.Configuration;
-import xyz.sakubami.protocol_apocalypse.shared.network.packets.clienttoserver.C2SPlayerMovePacket;
+import xyz.sakubami.protocol_apocalypse.shared.utils.Coordinates;
 import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2f;
 
-import java.util.Vector;
-
 public class InputHandler {
-    public void handle(Input input, Prediction prediction, float deltaTime) {
+    public void handle(Input input, Prediction prediction, float deltaTime, Camera camera) {
         if (input.isKeyPressed(Input.Keys.W) ||
             input.isKeyPressed(Input.Keys.A) ||
             input.isKeyPressed(Input.Keys.S) ||
             input.isKeyPressed(Input.Keys.D))
             move(input, prediction, deltaTime);
+        if (input.isButtonJustPressed(Input.Buttons.RIGHT))
+            singleInteract(input, prediction, camera);
     }
 
     private void move(Input input, Prediction prediction, float deltaTime) {
@@ -38,7 +34,10 @@ public class InputHandler {
         prediction.sendMovement(velocity, deltaTime);
     }
 
-    private void interact() {
+    private void singleInteract(Input input, Prediction prediction, Camera camera) {
+        Vector3 worldPos = camera.unproject(new Vector3(input.getX(), input.getY(), 0));
+        Vector2f pos = new Vector2f(worldPos.x, worldPos.y);
+        prediction.sendInteract(pos);
         // local prediction
         // right click
         // send player input packet to server

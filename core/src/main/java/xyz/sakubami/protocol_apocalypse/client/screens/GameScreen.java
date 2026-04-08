@@ -27,7 +27,6 @@ public class GameScreen implements Screen {
     private final ScreenViewport viewport;
     private final WorldRenderer renderer;
     private final SpriteBatch batch;
-    private final InteractionManager interactionManager;
     private final InputHandler inputHandler;
     private final Client client;
 
@@ -46,7 +45,6 @@ public class GameScreen implements Screen {
         batch = new SpriteBatch();
 
         client = game.getClient();
-        interactionManager = new InteractionManager(client);
         inputHandler = game.getInputHandler();
 
         renderer = new WorldRenderer();
@@ -70,7 +68,7 @@ public class GameScreen implements Screen {
     @Override
     public void render(float v) {
         client.update();
-        inputHandler.handle(Gdx.input, client.getPrediction(), Gdx.graphics.getDeltaTime());
+        inputHandler.handle(Gdx.input, client.getPrediction(), Gdx.graphics.getDeltaTime(), camera);
 
         if (Gdx.input.isKeyPressed(Input.Keys.Q)) camera.zoom -= 1;
         if (Gdx.input.isKeyPressed(Input.Keys.E)) camera.zoom += 1;

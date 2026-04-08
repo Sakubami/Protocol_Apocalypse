@@ -25,7 +25,7 @@ public class Server {
     private final ServerPacketHandler handler = new ServerPacketHandler(this);
     private World world;
     private Saviour saviour;
-    private final Validation validation = new Validation();
+    private final Validation validation = new Validation(this);
 
     private final Queue<Player> pendingPlayers = new LinkedList<>();
     private final Map<Connection, Player> connectedPlayers = new HashMap<>();
@@ -71,21 +71,16 @@ public class Server {
                 continue;
             }
             c.tick(handler); // read & execute packets
-            System.out.println("---");
         }
 
         if (onlinePlayers.isEmpty())
             return;
 
         GameStateBuilder stateBuilder = new GameStateBuilder();
-        validation.refresh();
+        validation.refresh(stateBuilder);
 
         if (!pendingPlayers.isEmpty())
             stateBuilder.updateEntity(new EntityState(pendingPlayers.poll()));
-
-        for (Map.Entry<UUID, Vector2f> entry : validation.fetchPlayerMovementCorrection().entrySet()) {
-            this.onlinePlayers.get(entry.getKey()).setPos(entry.getValue());
-        }
 
         broadcast(world.tick(onlinePlayers.values(), stateBuilder).compile());
         saviour.tick();

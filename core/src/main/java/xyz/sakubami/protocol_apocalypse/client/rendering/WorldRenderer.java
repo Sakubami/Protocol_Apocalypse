@@ -6,6 +6,7 @@ import xyz.sakubami.protocol_apocalypse.client.logic.ClientWorld;
 import xyz.sakubami.protocol_apocalypse.client.rendering.textures.TextureManager;
 import xyz.sakubami.protocol_apocalypse.shared.Configuration;
 import xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate.ChunkState;
+import xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate.ObjectState;
 import xyz.sakubami.protocol_apocalypse.shared.types.EntityType;
 import xyz.sakubami.protocol_apocalypse.shared.types.ObjectType;
 import xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate.State;
@@ -23,6 +24,10 @@ public record WorldRenderer() {
         states.addAll(world.getPlayers().values());
 
         for (Map.Entry<Vector2f, ChunkState> chunks : world.getChunks().entrySet()) {
+            for (ObjectState object : chunks.getValue().objects.values()) {
+                Vector2f p = object.pos;
+                object.pos = new Vector2f(p.x() * 32, p.y() * 32);
+            }
             states.addAll(chunks.getValue().objects.values());
 
             int size = Configuration.getDefaultChunkSize();
@@ -45,7 +50,6 @@ public record WorldRenderer() {
             .toList();
 
         for (State state : sorted) {
-            System.out.println("states: " + states.size());
             Vector2f pos = state.getPos();
             TextureRegion texture;
             Type type = state.getType();
@@ -54,8 +58,6 @@ public record WorldRenderer() {
                 texture = TextureManager.get().getObjectTexture((ObjectType) type);
             else {
                 texture = TextureManager.get().getEntityTexture((EntityType) type);
-                System.out.println("currently rendering entitytexture: " + type);
-                System.out.println("at position: " + pos);
             }
 
             batch.draw(texture, pos.x(), pos.y());

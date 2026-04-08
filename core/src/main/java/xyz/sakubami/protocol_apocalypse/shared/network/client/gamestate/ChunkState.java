@@ -5,6 +5,7 @@ import xyz.sakubami.protocol_apocalypse.server.logic.objects.GameObject;
 import xyz.sakubami.protocol_apocalypse.server.saving.data.ChunkBatch;
 import xyz.sakubami.protocol_apocalypse.server.saving.data.SerializedChunk;
 import xyz.sakubami.protocol_apocalypse.shared.types.TileType;
+import xyz.sakubami.protocol_apocalypse.shared.utils.Coordinates;
 import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2f;
 import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2i;
 
@@ -92,7 +93,7 @@ public class ChunkState {
     }
 
     public void addObject(ObjectState object) {
-        this.objects.put(object.pos, object);
+        this.objects.put(Coordinates.getChunkObjectPos(object.pos), object);
     }
     public TileType[] getTiles() { return tiles; }
     public ObjectState getObjectAt(Vector2f pos) { return this.objects.get(pos); }

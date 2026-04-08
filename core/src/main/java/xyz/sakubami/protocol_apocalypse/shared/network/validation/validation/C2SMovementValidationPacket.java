@@ -17,9 +17,9 @@ public class C2SMovementValidationPacket implements ValidationPacket {
     private Vector2f location;
     private Vector2f destination;
 
-    public C2SMovementValidationPacket(Player player, Vector2f destination) {
-        this.playerUUID = player.getUuid();
-        this.location = player.getPos();
+    public C2SMovementValidationPacket(UUID uuid, Vector2f pos, Vector2f destination) {
+        this.playerUUID = uuid;
+        this.location = pos;
         this.destination = destination;
     }
 

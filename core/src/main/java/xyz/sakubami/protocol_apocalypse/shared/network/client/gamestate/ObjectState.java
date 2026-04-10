@@ -9,8 +9,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 
-public class ObjectState implements State {
-    public SerializedObject object;
+public class ObjectState implements State<ObjectState> {
     public boolean remove = false;
     public Vector2f pos;
     public ObjectType type;
@@ -49,4 +48,12 @@ public class ObjectState implements State {
 
     @Override public Vector2f getPos() { return pos; }
     @Override public ObjectType getType() { return type; }
+
+    @Override
+    public ObjectState copy(ObjectState original) {
+        ObjectState state = new ObjectState(original.remove);
+        state.pos = original.pos;
+        state.type = original.type;
+        return state;
+    }
 }

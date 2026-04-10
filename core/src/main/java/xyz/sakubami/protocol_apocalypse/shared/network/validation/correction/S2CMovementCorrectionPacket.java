@@ -47,5 +47,10 @@ public class S2CMovementCorrectionPacket implements CorrectionPacket {
         return 6;
     }
 
+    @Override
+    public UUID getSignature() {
+        return null;
+    }
+
 
 }

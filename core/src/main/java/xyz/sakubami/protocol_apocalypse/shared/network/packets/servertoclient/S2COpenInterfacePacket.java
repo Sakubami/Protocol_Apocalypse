@@ -8,6 +8,7 @@ import xyz.sakubami.protocol_apocalypse.shared.network.packets.handlers.PacketHa
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.UUID;
 
 public class S2COpenInterfacePacket implements Packet {
     private InterfaceT type;
@@ -36,5 +37,10 @@ public class S2COpenInterfacePacket implements Packet {
     @Override
     public int getId() {
         return 2;
+    }
+
+    @Override
+    public UUID getSignature() {
+        return null;
     }
 }

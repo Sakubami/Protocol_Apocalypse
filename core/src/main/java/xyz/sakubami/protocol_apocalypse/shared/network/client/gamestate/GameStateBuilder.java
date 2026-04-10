@@ -1,6 +1,8 @@
 package xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate;
 
+import xyz.sakubami.protocol_apocalypse.server.logic.world.entities.livingentity.Player;
 import xyz.sakubami.protocol_apocalypse.shared.network.packets.servertoclient.S2CGameStatePacket;
+import xyz.sakubami.protocol_apocalypse.shared.types.EntityType;
 import xyz.sakubami.protocol_apocalypse.shared.utils.Coordinates;
 import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2f;
 
@@ -12,13 +14,12 @@ import java.util.UUID;
 public class GameStateBuilder {
     private final Map<Vector2f, ChunkState> chunks = new HashMap<>();
     private final Map<UUID, EntityState> entities = new HashMap<>();
+    private final Map<UUID, EntityState> players = new HashMap<>();
 
     public void updateObject(ObjectState object) {
         Vector2f pos = Coordinates.getChunkPos(object.pos);
         ChunkState state = chunks.computeIfAbsent(pos, k -> new ChunkState(false));
         chunks.get(pos).addObject(object);
-
-        System.out.println("ADDED OBJECT AT " + Coordinates.getChunkObjectPos(object.pos) + " TO CHUNK AND THE CHUNK NOW HAS " +  chunks.get(pos).objects.size() + " OBJECTS");
     }
 
     public void addChunk(Vector2f pos, ChunkState state) {
@@ -27,6 +28,9 @@ public class GameStateBuilder {
 
     public void updateEntity(EntityState entity) {
         entities.put(entity.uuid, entity);
+
+        if (entity.type.equals(EntityType.PLAYER))
+            players.put(entity.uuid, entity);
     }
 
     public void removeChunk(Vector2f pos) {
@@ -46,4 +50,6 @@ public class GameStateBuilder {
     public S2CGameStatePacket compile() {
         return new S2CGameStatePacket(new GameState(entities, chunks));
     }
+
+    public Map<UUID, EntityState> getPlayers() { return this.players; }
 }

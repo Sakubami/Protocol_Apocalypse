@@ -7,6 +7,7 @@ import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2i;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.UUID;
 
 public class C2SBlockUpdatePacket implements Packet {
     public Vector2i pos;
@@ -35,5 +36,10 @@ public class C2SBlockUpdatePacket implements Packet {
     @Override
     public int getId() {
         return 1;
+    }
+
+    @Override
+    public UUID getSignature() {
+        return null;
     }
 }

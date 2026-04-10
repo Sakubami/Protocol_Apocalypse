@@ -37,6 +37,7 @@ public class InputHandler {
     private void singleInteract(Input input, Prediction prediction, Camera camera) {
         Vector3 worldPos = camera.unproject(new Vector3(input.getX(), input.getY(), 0));
         Vector2f pos = new Vector2f(worldPos.x, worldPos.y);
+        System.out.println("CLICKED ABSOLUTE POSITION: " + pos);
         prediction.sendInteract(pos);
         // local prediction
         // right click

@@ -61,10 +61,10 @@ public class ChunkState {
         System.out.println("OBJECTS SIZE: " + objects.size());
         for (Map.Entry<Vector2f, ObjectState> entry : objects.entrySet()) {
             System.out.println("DOING SOMETHING WITH OBJECTS OR SOMETHING");
-            System.out.println("WRITTEN OBJECT TO DATA" + entry.getValue().pos);
             out.writeFloat(entry.getKey().x());
             out.writeFloat(entry.getKey().y());
             entry.getValue().write(out);
+            System.out.println("WRITTEN OBJECT TO DATA" + entry.getValue().pos);
         }
     }
 
@@ -87,13 +87,19 @@ public class ChunkState {
             float y = in.readFloat();
             ObjectState object = ObjectState.read(in);
             state.objects.put(new Vector2f(x, y), object);
+            System.out.println("GOTTEN OBJECT FROM DATA" + object.pos);
         }
 
         return state;
+
     }
 
     public void addObject(ObjectState object) {
-        this.objects.put(Coordinates.getChunkObjectPos(object.pos), object);
+        System.out.println("POSITION BEFORE GETTING CHUNK: " + object.pos);
+        Vector2f absolute = new Vector2f(object.pos.x() * 32, object.pos.y() * 32);
+        Vector2f p = Coordinates.getChunkObjectPos(absolute);
+        this.objects.put(p, object);
+        System.out.println("PLACED OBJECT IN CHUNK AT: " + p);
     }
     public TileType[] getTiles() { return tiles; }
     public ObjectState getObjectAt(Vector2f pos) { return this.objects.get(pos); }

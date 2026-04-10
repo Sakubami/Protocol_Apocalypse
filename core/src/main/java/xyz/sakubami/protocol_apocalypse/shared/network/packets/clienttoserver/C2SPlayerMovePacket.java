@@ -53,4 +53,9 @@ public class C2SPlayerMovePacket implements Packet {
     public int getId() {
         return 0;
     }
+
+    @Override
+    public UUID getSignature() {
+        return null;
+    }
 }

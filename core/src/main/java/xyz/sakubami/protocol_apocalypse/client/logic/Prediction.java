@@ -10,7 +10,10 @@ import xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate.ObjectSt
 import xyz.sakubami.protocol_apocalypse.shared.network.packets.clienttoserver.C2SPlayerMovePacket;
 import xyz.sakubami.protocol_apocalypse.shared.network.validation.validation.C2SBlockUpdateValidationPacket;
 import xyz.sakubami.protocol_apocalypse.shared.network.validation.validation.C2SMovementValidationPacket;
+import xyz.sakubami.protocol_apocalypse.shared.utils.Coordinates;
 import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2f;
+
+import java.util.Vector;
 
 public record Prediction(Client client) {
 
@@ -23,7 +26,11 @@ public record Prediction(Client client) {
 
     public void sendInteract(Vector2f pos) {
         EntityState state = client.getCurrentWorldData().getPlayers().get(Configuration.getClientPlayerUUID());
-        System.out.println("CLICKED TILE: " + pos.x() / 32 + " - " +  pos.y() / 32);
+        Vector2f check = Coordinates.getTilePos(state.pos);
+        if (check.x() > 5 || check.y() > 5 || check.x() + check.y() > 6) {
+            System.out.println("REJECTED PLAYER INTERACTION AT CLIENT LEVEL");
+            return;
+        }
         client.getCurrentWorldData().placeBlock(pos, new ObjectState(new Tree()));
         client.sendPacket(new C2SBlockUpdateValidationPacket(Configuration.getClientPlayerUUID(), pos, new ObjectState(new Tree())));
     }

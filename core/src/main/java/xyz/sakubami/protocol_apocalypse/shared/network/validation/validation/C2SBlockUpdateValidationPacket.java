@@ -5,6 +5,7 @@ import xyz.sakubami.protocol_apocalypse.shared.network.packets.clienttoserver.C2
 import xyz.sakubami.protocol_apocalypse.shared.network.packets.handlers.PacketHandler;
 import xyz.sakubami.protocol_apocalypse.shared.network.packets.handlers.ServerPacketHandler;
 import xyz.sakubami.protocol_apocalypse.shared.network.validation.ValidationPacket;
+import xyz.sakubami.protocol_apocalypse.shared.utils.Coordinates;
 import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2f;
 
 import java.io.DataInputStream;
@@ -23,7 +24,7 @@ public class C2SBlockUpdateValidationPacket implements ValidationPacket {
         this.uuid = uuid;
         this.pos = pos;
         this.state = state;
-        this.state.pos = pos;
+        this.state.pos = Coordinates.getChunkObjectPos(pos);
     }
 
     public C2SBlockUpdateValidationPacket() {}
@@ -53,6 +54,11 @@ public class C2SBlockUpdateValidationPacket implements ValidationPacket {
     @Override
     public int getId() {
         return 7;
+    }
+
+    @Override
+    public UUID getSignature() {
+        return null;
     }
 
     public UUID getUuid() { return this.uuid; }

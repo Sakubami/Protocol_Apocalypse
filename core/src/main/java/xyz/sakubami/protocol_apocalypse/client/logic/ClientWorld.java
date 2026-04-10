@@ -21,6 +21,7 @@ public class ClientWorld {
         for (Map.Entry<UUID, EntityState> entry : state.entities.entrySet()) {
             if (entry.getValue().getType().equals(EntityType.PLAYER)) {
                 players.put(entry.getKey(), entry.getValue());
+                System.out.println("UPDATED PLAYER: " + entry.getValue().pos);
                 continue;
             }
             if (entry.getValue().remove) {
@@ -37,15 +38,15 @@ public class ClientWorld {
                 chunks.remove(pos);
                 continue;
             }
-            chunks.put(pos, entry.getValue());
+            if (!chunks.containsKey(entry.getKey()))
+                chunks.put(pos, entry.getValue());
+            else
+                chunks.get(pos).objects.putAll(entry.getValue().objects);
         }
     }
 
     public void placeBlock(Vector2f pos, ObjectState state) {
-        System.out.println("ABSOLUTE POS: " + pos);
-        state.pos = Coordinates.getChunkObjectPos(pos);
-        System.out.println("CHUNK POS: " + Coordinates.getChunkPos(pos));
-        System.out.println("TILE POS IN CHUNK: " + Coordinates.getChunkObjectPos(pos));
+        state.pos = Coordinates.getTilePos(pos);
         this.chunks.get(Coordinates.getChunkPos(pos)).addObject(state);
     }
 

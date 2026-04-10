@@ -53,6 +53,11 @@ public class C2SMovementValidationPacket implements ValidationPacket {
         return 5;
     }
 
+    @Override
+    public UUID getSignature() {
+        return null;
+    }
+
     public Vector2f getLocation() { return this.location; }
     public Vector2f getDestination() { return this.destination; }
     public UUID getPlayerUUID() { return this.playerUUID; }

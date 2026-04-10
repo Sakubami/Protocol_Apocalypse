@@ -51,4 +51,9 @@ public class C2SPlayerConnectPacket implements Packet {
     public int getId() {
         return 4;
     }
+
+    @Override
+    public UUID getSignature() {
+        return null;
+    }
 }

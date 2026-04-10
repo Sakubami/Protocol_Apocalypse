@@ -13,7 +13,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
-public class EntityState implements State {
+public class EntityState implements State<EntityState> {
     public UUID uuid;
     public boolean remove = false;
     public EntityType type;
@@ -56,4 +56,13 @@ public class EntityState implements State {
 
     @Override public Vector2f getPos() { return pos; }
     @Override public Type getType() { return type; }
+
+    @Override
+    public EntityState copy(EntityState original) {
+        EntityState e = new EntityState(original.remove);
+        e.type = original.type;
+        e.uuid = original.uuid;
+        e.pos = original.pos;
+        return e;
+    }
 }

@@ -10,7 +10,6 @@ import xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate.EntitySt
 import xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate.GameStateBuilder;
 import xyz.sakubami.protocol_apocalypse.shared.network.packets.handlers.ServerPacketHandler;
 import xyz.sakubami.protocol_apocalypse.shared.network.validation.Validation;
-import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2f;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -73,17 +72,22 @@ public class Server {
             c.tick(handler); // read & execute packets
         }
 
-        if (onlinePlayers.isEmpty())
+        if (this.onlinePlayers.isEmpty() || this.connectedPlayers.isEmpty())
             return;
 
         GameStateBuilder stateBuilder = new GameStateBuilder();
-        validation.refresh(stateBuilder);
+        validation.tick(stateBuilder);
 
         if (!pendingPlayers.isEmpty())
             stateBuilder.updateEntity(new EntityState(pendingPlayers.poll()));
 
+        for (Map.Entry<UUID, EntityState> states : stateBuilder.getPlayers().entrySet()) {
+            this.onlinePlayers.get(states.getKey()).setPos(states.getValue().pos);
+        }
+
         broadcast(world.tick(onlinePlayers.values(), stateBuilder).compile());
         saviour.tick();
+
     }
 
     private void disconnectClient(Connection c) {

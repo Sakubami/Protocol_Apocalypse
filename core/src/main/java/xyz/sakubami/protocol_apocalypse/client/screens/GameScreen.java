@@ -2,21 +2,17 @@ package xyz.sakubami.protocol_apocalypse.client.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import xyz.sakubami.protocol_apocalypse.client.Client;
 import xyz.sakubami.protocol_apocalypse.client.logic.input.InputHandler;
-import xyz.sakubami.protocol_apocalypse.client.logic.interactions.InteractionManager;
-import xyz.sakubami.protocol_apocalypse.client.rendering.ChunkRenderer;
-import xyz.sakubami.protocol_apocalypse.client.rendering.EntityRenderer;
 import xyz.sakubami.protocol_apocalypse.ProtocolApocalypse;
-import xyz.sakubami.protocol_apocalypse.client.rendering.WorldRenderer;
-import xyz.sakubami.protocol_apocalypse.server.Server;
-import xyz.sakubami.protocol_apocalypse.shared.Configuration;
+import xyz.sakubami.protocol_apocalypse.client.rendering.UI.UIManager;
+import xyz.sakubami.protocol_apocalypse.client.rendering.world.WorldRenderer;
 
 import java.io.IOException;
 
@@ -29,6 +25,7 @@ public class GameScreen implements Screen {
     private final SpriteBatch batch;
     private final InputHandler inputHandler;
     private final Client client;
+    private final UIManager uiManager;
 
     private final int TILE_SIZE = 32;
     private final int MAP_HEIGHT = 20;
@@ -48,10 +45,12 @@ public class GameScreen implements Screen {
         inputHandler = game.getInputHandler();
 
         renderer = new WorldRenderer();
+        uiManager = new UIManager();
 
         viewport = new ScreenViewport(camera); // 1 world unit = 1 pixel
         viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
         game.setScreen(this);
+
 
         try {
             client.hostLocal(25556);
@@ -63,17 +62,20 @@ public class GameScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
+        uiManager.getStage().getViewport().update(width, height, true);
     }
 
     @Override
     public void render(float v) {
         client.update();
-        inputHandler.handle(Gdx.input, client.getPrediction(), Gdx.graphics.getDeltaTime(), camera);
+        inputHandler.handle(Gdx.input, client.getPrediction(), Gdx.graphics.getDeltaTime(), camera);// game second
+
+        Gdx.input.setInputProcessor(uiManager.getStage());
 
         if (Gdx.input.isKeyPressed(Input.Keys.Q)) camera.zoom -= 1;
         if (Gdx.input.isKeyPressed(Input.Keys.E)) camera.zoom += 1;
 
-        camera.zoom = MathUtils.clamp(camera.zoom, 0.5f, 20f);
+        camera.zoom = 1f;
 
         camera.position.x = Math.round(client.getPlayerPos().x());
         camera.position.y = Math.round(client.getPlayerPos().y());
@@ -86,6 +88,7 @@ public class GameScreen implements Screen {
         batch.begin();
         renderer.render(batch, client.getCurrentWorldData());
         batch.end();
+        uiManager.render();
     }
 
     @Override public void pause() {}

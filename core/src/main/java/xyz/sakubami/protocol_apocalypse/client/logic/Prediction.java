@@ -1,37 +1,44 @@
 package xyz.sakubami.protocol_apocalypse.client.logic;
 
-import com.badlogic.gdx.Input;
 import xyz.sakubami.protocol_apocalypse.client.Client;
-import xyz.sakubami.protocol_apocalypse.server.logic.objects.normal.Tree;
-import xyz.sakubami.protocol_apocalypse.server.logic.world.entities.livingentity.Player;
+import xyz.sakubami.protocol_apocalypse.server.logic.objects.normal.Wall;
 import xyz.sakubami.protocol_apocalypse.shared.Configuration;
+import xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate.Direction;
 import xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate.EntityState;
 import xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate.ObjectState;
-import xyz.sakubami.protocol_apocalypse.shared.network.packets.clienttoserver.C2SPlayerMovePacket;
 import xyz.sakubami.protocol_apocalypse.shared.network.validation.validation.C2SBlockUpdateValidationPacket;
 import xyz.sakubami.protocol_apocalypse.shared.network.validation.validation.C2SMovementValidationPacket;
-import xyz.sakubami.protocol_apocalypse.shared.utils.Coordinates;
 import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2f;
 
 import java.util.Vector;
 
 public record Prediction(Client client) {
 
-    public void sendMovement(Vector2f velocity, float deltaTime) {
+    public void sendMovement(Vector2f velocity, float deltaTime, Direction direction) {
         Vector2f movement = velocity.mul(deltaTime);
         Vector2f v = client.getCurrentWorldData().getPlayers().get(Configuration.getClientPlayerUUID()).getPos();
         client.getCurrentWorldData().getPlayers().get(Configuration.getClientPlayerUUID()).pos = v.add(movement);
-        client.sendPacket(new C2SMovementValidationPacket(Configuration.getClientPlayerUUID(), v, movement));
+        client.getCurrentWorldData().getPlayers().get(Configuration.getClientPlayerUUID()).setDirection(direction);
+        client.sendPacket(new C2SMovementValidationPacket(Configuration.getClientPlayerUUID(), v, movement, direction));
     }
 
     public void sendInteract(Vector2f pos) {
         EntityState state = client.getCurrentWorldData().getPlayers().get(Configuration.getClientPlayerUUID());
-        Vector2f check = Coordinates.getTilePos(state.pos);
-        if (check.x() > 5 || check.y() > 5 || check.x() + check.y() > 6) {
+        System.out.println("CLICKED: " + state.pos);
+        System.out.println("CLICKED AT: " + pos);
+        float x = (float) Math.floor(Math.abs(state.pos.x() / 32 - pos.x() / 32));
+        float y = (float) Math.floor(Math.abs(state.pos.y() / 32- pos.y() / 32));
+        System.out.println("X: " + x + " Y: " + y + "   and click pos " + pos);
+        System.out.println("coordinates: " + state.pos.x() / 32 + "  -  " + state.pos.y() / 32);
+        if (x > 5 || y > 5 || x + y > 6.66f) {
             System.out.println("REJECTED PLAYER INTERACTION AT CLIENT LEVEL");
             return;
         }
-        client.getCurrentWorldData().placeBlock(pos, new ObjectState(new Tree()));
-        client.sendPacket(new C2SBlockUpdateValidationPacket(Configuration.getClientPlayerUUID(), pos, new ObjectState(new Tree())));
+        client.getCurrentWorldData().placeBlock(pos, new ObjectState(new Wall()));
+        client.sendPacket(new C2SBlockUpdateValidationPacket(Configuration.getClientPlayerUUID(), pos, new ObjectState(new Wall())));
+    }
+
+    public void sendAttack(Vector2f pos) {
+
     }
 }

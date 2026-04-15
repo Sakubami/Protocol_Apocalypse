@@ -2,7 +2,7 @@ package xyz.sakubami.protocol_apocalypse.server.logic.objects.container.interfac
 
 import xyz.sakubami.protocol_apocalypse.server.logic.objects.container.ItemHolder;
 import xyz.sakubami.protocol_apocalypse.server.saving.data.SerializedObject;
-import xyz.sakubami.protocol_apocalypse.shared.types.ObjectType;
+import xyz.sakubami.protocol_apocalypse.shared.type.ObjectType;
 import xyz.sakubami.protocol_apocalypse.client.logic.user_interfaces.InterfaceT;
 
 public abstract class InterfaceHolder extends ItemHolder {

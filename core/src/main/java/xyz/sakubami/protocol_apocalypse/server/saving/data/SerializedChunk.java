@@ -1,6 +1,6 @@
 package xyz.sakubami.protocol_apocalypse.server.saving.data;
 
-import xyz.sakubami.protocol_apocalypse.shared.types.TileType;
+import xyz.sakubami.protocol_apocalypse.client.rendering.textures.registry.TileTexture;
 import xyz.sakubami.protocol_apocalypse.server.logic.chunks.Chunk;
 import xyz.sakubami.protocol_apocalypse.shared.Configuration;
 
@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SerializedChunk implements Serialized<Chunk> {
-    public TileType[] tiles;
+    public TileTexture[] tiles;
     public int size;
     public Map<String, SerializedObject> objects = new HashMap<>();
 

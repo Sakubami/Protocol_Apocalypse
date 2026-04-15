@@ -4,7 +4,7 @@ import xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate.ChunkSta
 import xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate.EntityState;
 import xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate.GameState;
 import xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate.ObjectState;
-import xyz.sakubami.protocol_apocalypse.shared.types.EntityType;
+import xyz.sakubami.protocol_apocalypse.shared.type.EntityType;
 import xyz.sakubami.protocol_apocalypse.shared.utils.Coordinates;
 import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2f;
 
@@ -21,7 +21,6 @@ public class ClientWorld {
         for (Map.Entry<UUID, EntityState> entry : state.entities.entrySet()) {
             if (entry.getValue().getType().equals(EntityType.PLAYER)) {
                 players.put(entry.getKey(), entry.getValue());
-                System.out.println("UPDATED PLAYER: " + entry.getValue().pos);
                 continue;
             }
             if (entry.getValue().remove) {

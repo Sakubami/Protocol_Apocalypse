@@ -1,6 +1,6 @@
-package xyz.sakubami.protocol_apocalypse.shared.types;
+package xyz.sakubami.protocol_apocalypse.shared.type;
 
-public enum TileType implements Type{
+public enum TileType implements Type {
     GRASS(0),
     SNOW(1),
     WATER(2);

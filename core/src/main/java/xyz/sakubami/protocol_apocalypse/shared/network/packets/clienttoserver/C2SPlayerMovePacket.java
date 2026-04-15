@@ -46,7 +46,6 @@ public class C2SPlayerMovePacket implements Packet {
             return;
         Player player = h.server().getOnlinePlayer(uuid);
         player.setPos(player.getPos().add(new Vector2f(x, y)));
-        System.out.println("updated player position: " + player.getPos().x() / 32 + " " + player.getPos().y() / 32);
     }
 
     @Override

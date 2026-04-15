@@ -1,8 +1,7 @@
-package xyz.sakubami.protocol_apocalypse.client.rendering;
+package xyz.sakubami.protocol_apocalypse.client.rendering.world;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import xyz.sakubami.protocol_apocalypse.client.logic.ClientWorld;
-import xyz.sakubami.protocol_apocalypse.client.rendering.textures.TextureManager;
 import xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate.EntityState;
 import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2f;
 
@@ -24,7 +23,7 @@ public record EntityRenderer(SpriteBatch batch, ClientWorld world) {
 
         for (EntityState entity : sorted) {
             Vector2f pos = entity.pos;
-            batch.draw(TextureManager.get().getEntityTexture(entity.type), pos.x(), pos.y());
+            // batch.draw(TextureManager.get().getEntityTexture(entity.type), pos.x(), pos.y());
         }
     }
 

@@ -1,23 +1,21 @@
 package xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate;
 
 import xyz.sakubami.protocol_apocalypse.server.logic.world.entities.Entity;
-import xyz.sakubami.protocol_apocalypse.server.saving.data.SerializedEntity;
-import xyz.sakubami.protocol_apocalypse.shared.types.EntityType;
-import xyz.sakubami.protocol_apocalypse.shared.types.Type;
-import xyz.sakubami.protocol_apocalypse.shared.utils.PositionalVector;
+import xyz.sakubami.protocol_apocalypse.shared.type.EntityType;
+import xyz.sakubami.protocol_apocalypse.shared.type.Type;
 import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2f;
-import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2i;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.UUID;
 
-public class EntityState implements State<EntityState> {
+public class EntityState implements RenderSortable<EntityState> {
     public UUID uuid;
     public boolean remove = false;
     public EntityType type;
     public Vector2f pos;
+    public Direction direction = Direction.SOUTH;
 
     public EntityState(boolean remove) {
         this.remove = remove;
@@ -54,7 +52,7 @@ public class EntityState implements State<EntityState> {
         return e;
     }
 
-    @Override public Vector2f getPos() { return pos; }
+    public Vector2f getPos() { return pos; }
     @Override public Type getType() { return type; }
 
     @Override
@@ -63,6 +61,9 @@ public class EntityState implements State<EntityState> {
         e.type = original.type;
         e.uuid = original.uuid;
         e.pos = original.pos;
+        e.direction = original.direction;
         return e;
     }
+
+    public void setDirection(Direction direction) { this.direction = direction; }
 }

@@ -3,15 +3,14 @@ package xyz.sakubami.protocol_apocalypse.server.logic.chunks;
 import xyz.sakubami.protocol_apocalypse.server.logic.objects.GameObject;
 import xyz.sakubami.protocol_apocalypse.server.saving.data.Serializable;
 import xyz.sakubami.protocol_apocalypse.server.saving.data.SerializedChunk;
-import xyz.sakubami.protocol_apocalypse.shared.types.TileType;
+import xyz.sakubami.protocol_apocalypse.client.rendering.textures.registry.TileTexture;
 import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2f;
-import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2i;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class Chunk implements Serializable<SerializedChunk> {
-    private TileType[] tiles;
+    private TileTexture[] tiles;
     private final int size;
     private final Map<Vector2f, GameObject> objects;
 
@@ -42,23 +41,22 @@ public class Chunk implements Serializable<SerializedChunk> {
         }
     }
 
-    public boolean generateTiles(WorldGenerator generator, Vector2f pos) {
-        TileType[] tiles1D = new TileType[size * size];
+    public void generateTiles(WorldGenerator generator, Vector2f pos) {
+        TileTexture[] tiles1D = new TileTexture[size * size];
 
         for (int y = 0; y < size; y++) {
             for (int x = 0; x < size; x++) {
                 float worldX = pos.x() * size + x;
                 float worldY = pos.y() * size + y;
                 double value = generator.getNoise(worldX * 0.8, worldY * 0.8);
-                TileType tile;
-                if (value < 0) tile = TileType.WATER;
-                else if (value < 0.2) tile = TileType.GRASS;
-                else tile = TileType.SNOW;
+                TileTexture tile;
+                if (value < 0) tile = TileTexture.WATER0;
+                else if (value < 0.2) tile = TileTexture.GRASS0;
+                else tile = TileTexture.SNOW0;
                 tiles1D[x + y * size] = tile;
             }
         }
         this.tiles = tiles1D;
-        return tiles.length != 0;
     }
 
     public void addObject(Vector2f pos, GameObject object) {
@@ -73,6 +71,6 @@ public class Chunk implements Serializable<SerializedChunk> {
     public Map<Vector2f, GameObject> getObjects() {
         return this.objects;
     }
-    public TileType[] getTiles() { return this.tiles; }
+    public TileTexture[] getTiles() { return this.tiles; }
     public int getSize() { return this.size; }
 }

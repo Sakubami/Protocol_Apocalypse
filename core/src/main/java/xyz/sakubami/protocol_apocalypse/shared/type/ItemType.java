@@ -1,6 +1,6 @@
-package xyz.sakubami.protocol_apocalypse.shared.types;
+package xyz.sakubami.protocol_apocalypse.shared.type;
 
-public enum ItemType implements Type{
+public enum ItemType implements Type {
     SWORD(0);
 
     private static final ItemType[] BY_ID = new ItemType[values().length];

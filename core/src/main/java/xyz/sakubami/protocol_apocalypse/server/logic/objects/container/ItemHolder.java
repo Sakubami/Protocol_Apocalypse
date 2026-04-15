@@ -4,7 +4,7 @@ import xyz.sakubami.protocol_apocalypse.server.logic.items.ItemStack;
 import xyz.sakubami.protocol_apocalypse.server.logic.objects.GameObject;
 import xyz.sakubami.protocol_apocalypse.server.saving.data.SerializedItemStack;
 import xyz.sakubami.protocol_apocalypse.server.saving.data.SerializedObject;
-import xyz.sakubami.protocol_apocalypse.shared.types.ObjectType;
+import xyz.sakubami.protocol_apocalypse.shared.type.ObjectType;
 
 import java.util.HashMap;
 
@@ -35,7 +35,7 @@ public abstract class ItemHolder extends GameObject {
 
         for(Integer key : data.items.keySet()) {
             SerializedItemStack itemData = data.items.get(key);
-            ItemStack stack = new ItemStack(itemData.texture, itemData.id);
+            ItemStack stack = new ItemStack(itemData.texture, itemData.id, itemData.amount);
             stack.readData(data.items.get(key));
             this.items.put(key, stack);
         }

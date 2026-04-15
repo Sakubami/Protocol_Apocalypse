@@ -2,7 +2,7 @@ package xyz.sakubami.protocol_apocalypse.server.logic.world.entities.livingentit
 
 import xyz.sakubami.protocol_apocalypse.server.logic.world.entities.Entity;
 import xyz.sakubami.protocol_apocalypse.server.saving.data.SerializedEntity;
-import xyz.sakubami.protocol_apocalypse.shared.types.EntityType;
+import xyz.sakubami.protocol_apocalypse.shared.type.EntityType;
 import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2i;
 
 import java.util.UUID;

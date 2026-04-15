@@ -1,0 +1,33 @@
+package xyz.sakubami.protocol_apocalypse.client.rendering.UI;
+
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import xyz.sakubami.protocol_apocalypse.client.rendering.UI.components.HotbarView;
+import xyz.sakubami.protocol_apocalypse.client.rendering.textures.TextureManager;
+import xyz.sakubami.protocol_apocalypse.client.rendering.textures.registry.UITexture;
+import xyz.sakubami.protocol_apocalypse.server.logic.inventory.EntityInventory;
+
+public class UIManager {
+    private final Stage stage;
+    private final HotbarView hotbar;
+
+    public UIManager() {
+        stage = new Stage(new ScreenViewport());
+
+        hotbar = new HotbarView(new EntityInventory(), TextureManager.get().getUITexture(UITexture.SLOT0));
+        stage.addActor(hotbar.getRoot());
+    }
+
+    public void update(float delta) {
+        hotbar.update();
+        stage.act(delta);
+    }
+
+    public void render() {
+        stage.draw();
+    }
+
+    public Stage getStage() {
+        return stage;
+    }
+}

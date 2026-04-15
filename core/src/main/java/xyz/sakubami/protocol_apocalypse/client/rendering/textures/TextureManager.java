@@ -3,10 +3,7 @@ package xyz.sakubami.protocol_apocalypse.client.rendering.textures;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import xyz.sakubami.protocol_apocalypse.shared.types.EntityType;
-import xyz.sakubami.protocol_apocalypse.shared.types.ItemType;
-import xyz.sakubami.protocol_apocalypse.shared.types.ObjectType;
-import xyz.sakubami.protocol_apocalypse.shared.types.TileType;
+import xyz.sakubami.protocol_apocalypse.client.rendering.textures.registry.*;
 
 import java.util.EnumMap;
 
@@ -17,18 +14,20 @@ public class TextureManager {
 
     private final TextureAtlas atlas;
 
-    private final EnumMap<ItemType, TextureRegion> items = new EnumMap<>(ItemType.class);
-    private final EnumMap<TileType, TextureRegion> tiles = new EnumMap<>(TileType.class);
-    private final EnumMap<ObjectType, TextureRegion> objects = new EnumMap<>(ObjectType.class);
-    private final EnumMap<EntityType, TextureRegion> entities = new EnumMap<>(EntityType.class);
+    private final EnumMap<ItemTexture, TextureRegion> items = new EnumMap<>(ItemTexture.class);
+    private final EnumMap<TileTexture, TextureRegion> tiles = new EnumMap<>(TileTexture.class);
+    private final EnumMap<ObjectTexture, TextureRegion> objects = new EnumMap<>(ObjectTexture.class);
+    private final EnumMap<EntityTexture, TextureRegion> entities = new EnumMap<>(EntityTexture.class);
+    private final EnumMap<UITexture, TextureRegion> uiElements = new EnumMap<>(UITexture.class);
 
     public TextureManager() {
         atlas = new TextureAtlas(Gdx.files.internal("game.atlas"));
 
-        loadEnum(ItemType.values(), items);
-        loadEnum(ObjectType.values(), objects);
-        loadEnum(TileType.values(), tiles);
-        loadEnum(EntityType.values(), entities);
+        loadEnum(ItemTexture.values(), items);
+        loadEnum(ObjectTexture.values(), objects);
+        loadEnum(TileTexture.values(), tiles);
+        loadEnum(EntityTexture.values(), entities);
+        loadEnum(UITexture.values(), uiElements);
     }
 
     private <E extends Enum<E>> void loadEnum(E[] values, EnumMap<E, TextureRegion> map) {
@@ -44,8 +43,9 @@ public class TextureManager {
         }
     }
 
-    public TextureRegion getItemTexture(ItemType texture) { return this.items.get(texture); }
-    public TextureRegion getTileTexture(TileType texture) { return this.tiles.get(texture); }
-    public TextureRegion getObjectTexture(ObjectType texture) { return this.objects.get(texture); }
-    public TextureRegion getEntityTexture(EntityType texture) { return this.entities.get(texture); }
+    public TextureRegion getItemTexture(ItemTexture texture) { return this.items.get(texture); }
+    public TextureRegion getTileTexture(TileTexture texture) { return this.tiles.get(texture); }
+    public TextureRegion getObjectTexture(ObjectTexture texture) { return this.objects.get(texture); }
+    public TextureRegion getEntityTexture(EntityTexture texture) { return this.entities.get(texture); }
+    public TextureRegion getUITexture(UITexture texture) { return this.uiElements.get(texture); }
 }

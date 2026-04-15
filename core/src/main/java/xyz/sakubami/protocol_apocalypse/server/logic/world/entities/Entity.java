@@ -1,10 +1,8 @@
 package xyz.sakubami.protocol_apocalypse.server.logic.world.entities;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import xyz.sakubami.protocol_apocalypse.server.saving.data.Serializable;
 import xyz.sakubami.protocol_apocalypse.server.saving.data.SerializedEntity;
-import xyz.sakubami.protocol_apocalypse.client.rendering.textures.TextureManager;
-import xyz.sakubami.protocol_apocalypse.shared.types.EntityType;
+import xyz.sakubami.protocol_apocalypse.shared.type.EntityType;
 import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2f;
 
 import java.util.HashMap;

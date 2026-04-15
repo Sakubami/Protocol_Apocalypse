@@ -1,8 +1,9 @@
-package xyz.sakubami.protocol_apocalypse.shared.types;
+package xyz.sakubami.protocol_apocalypse.shared.type;
 
-public enum ObjectType implements Type{
+public enum ObjectType implements Type {
     CHEST(0),
-    TREE(1);
+    TREE(1),
+    WALL(2);
 
     private static final ObjectType[] BY_ID = new ObjectType[values().length];
 

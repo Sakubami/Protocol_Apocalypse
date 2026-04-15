@@ -1,17 +1,13 @@
-package xyz.sakubami.protocol_apocalypse.client.rendering;
+package xyz.sakubami.protocol_apocalypse.client.rendering.world;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import xyz.sakubami.protocol_apocalypse.client.logic.ClientWorld;
-import xyz.sakubami.protocol_apocalypse.server.logic.objects.GameObject;
 import xyz.sakubami.protocol_apocalypse.client.rendering.textures.TextureManager;
 import xyz.sakubami.protocol_apocalypse.shared.Configuration;
 import xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate.ChunkState;
 import xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate.ObjectState;
-import xyz.sakubami.protocol_apocalypse.shared.types.TileType;
+import xyz.sakubami.protocol_apocalypse.client.rendering.textures.registry.TileTexture;
 import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2f;
-import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2i;
-import xyz.sakubami.protocol_apocalypse.server.logic.chunks.Chunk;
-import xyz.sakubami.protocol_apocalypse.server.logic.chunks.ChunkManager;
 
 @Deprecated
 public record ChunkRenderer(SpriteBatch batch, ClientWorld clientWorld, int tileSize) {
@@ -28,7 +24,7 @@ public record ChunkRenderer(SpriteBatch batch, ClientWorld clientWorld, int tile
 
         for (int y = 0; y < size; y++) {
             for (int x = 0; x < size; x++) {
-                TileType tile = chunk.getTiles()[x + y * size];
+                TileTexture tile = chunk.getTiles()[x + y * size];
 
                 float worldX = (pos.x() * size + x) * tileSize;
                 float worldY = (pos.y() * size + y) * tileSize;
@@ -36,7 +32,8 @@ public record ChunkRenderer(SpriteBatch batch, ClientWorld clientWorld, int tile
                 batch.draw(TextureManager.get().getTileTexture(tile), worldX, worldY);
                 ObjectState object = chunk.getObjectAt(new Vector2f(x, y));
                 if (object != null)
-                    batch.draw(TextureManager.get().getObjectTexture(object.getType()), worldX, worldY);
+                    return;
+                    // batch.draw(TextureManager.get().getObjectTexture(object.getType()), worldX, worldY);
             }
         }
     }

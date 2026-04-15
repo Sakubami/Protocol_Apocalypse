@@ -1,6 +1,6 @@
 package xyz.sakubami.protocol_apocalypse.server.logic.objects.container.interfaces;
 
-import xyz.sakubami.protocol_apocalypse.shared.types.ObjectType;
+import xyz.sakubami.protocol_apocalypse.shared.type.ObjectType;
 import xyz.sakubami.protocol_apocalypse.client.logic.user_interfaces.InterfaceT;
 
 public class Chest extends InterfaceHolder {

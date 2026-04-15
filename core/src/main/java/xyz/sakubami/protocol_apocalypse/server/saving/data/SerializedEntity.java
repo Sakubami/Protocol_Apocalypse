@@ -1,6 +1,6 @@
 package xyz.sakubami.protocol_apocalypse.server.saving.data;
 
-import xyz.sakubami.protocol_apocalypse.shared.types.EntityType;
+import xyz.sakubami.protocol_apocalypse.shared.type.EntityType;
 import xyz.sakubami.protocol_apocalypse.server.logic.world.entities.Entity;
 
 import java.util.UUID;

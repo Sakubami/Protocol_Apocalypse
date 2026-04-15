@@ -1,28 +1,23 @@
-package xyz.sakubami.protocol_apocalypse.client.rendering;
+package xyz.sakubami.protocol_apocalypse.client.rendering.world;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import xyz.sakubami.protocol_apocalypse.client.logic.ClientWorld;
+import xyz.sakubami.protocol_apocalypse.client.rendering.textures.TextureHelper;
 import xyz.sakubami.protocol_apocalypse.client.rendering.textures.TextureManager;
 import xyz.sakubami.protocol_apocalypse.shared.Configuration;
-import xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate.ChunkState;
-import xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate.ObjectState;
-import xyz.sakubami.protocol_apocalypse.shared.types.EntityType;
-import xyz.sakubami.protocol_apocalypse.shared.types.ObjectType;
-import xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate.State;
-import xyz.sakubami.protocol_apocalypse.shared.types.TileType;
-import xyz.sakubami.protocol_apocalypse.shared.types.Type;
-import xyz.sakubami.protocol_apocalypse.shared.utils.Coordinates;
+import xyz.sakubami.protocol_apocalypse.shared.network.client.gamestate.*;
+import xyz.sakubami.protocol_apocalypse.client.rendering.textures.registry.TileTexture;
+import xyz.sakubami.protocol_apocalypse.shared.type.ObjectType;
+import xyz.sakubami.protocol_apocalypse.shared.type.Type;
 import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2f;
 
 import java.util.*;
 
-import static com.badlogic.gdx.utils.JsonValue.ValueType.object;
-
 public record WorldRenderer() {
 
     public void render(SpriteBatch batch, ClientWorld world) {
-        List<State<?>> states = new ArrayList<>(world.getEntities().values());
+        List<RenderSortable<?>> states = new ArrayList<>(world.getEntities().values());
 
         states.addAll(world.getPlayers().values());
 
@@ -41,7 +36,7 @@ public record WorldRenderer() {
 
             for (int y = 0; y < size; y++) {
                 for (int x = 0; x < size; x++) {
-                    TileType tile = entry.getValue().getTiles()[x + y * size];
+                    TileTexture tile = entry.getValue().getTiles()[x + y * size];
 
                     float worldX = (entry.getKey().x() * size + x) * tileSize;
                     float worldY = (entry.getKey().y() * size + y) * tileSize;
@@ -51,23 +46,23 @@ public record WorldRenderer() {
             }
         }
 
-        List<State<?>> sorted = states.stream()
-            .sorted(Comparator.comparing((State<?> state) -> state.getPos().y()).reversed())
+        List<RenderSortable<?>> sorted = states.stream()
+            .sorted(Comparator.comparing((RenderSortable<?> state) -> state.getPos().y()).reversed())
             .toList();
 
-        for (State<?> state : sorted) {
+        for (RenderSortable<?> state : sorted) {
             Vector2f pos = state.getPos();
             TextureRegion texture;
             Type type = state.getType();
 
             if (type instanceof ObjectType) {
-                texture = TextureManager.get().getObjectTexture((ObjectType) type);
+                texture = TextureHelper.getDefaultObjectTexture((ObjectType) type);
             }
             else {
-                texture = TextureManager.get().getEntityTexture((EntityType) type);
+                texture = TextureHelper.getEntityTextureByDirection((EntityState) state);
             }
 
-            batch.draw(texture, pos.x(), pos.y());
+            batch.draw(texture, Math.round(pos.x()), Math.round(pos.y()));
         }
     }
 }

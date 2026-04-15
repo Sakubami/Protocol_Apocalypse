@@ -11,6 +11,7 @@ import xyz.sakubami.protocol_apocalypse.shared.utils.Vector2f;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Vector;
 
 public class Validation {
 
@@ -36,26 +37,30 @@ public class Validation {
 
     public void validateMovement(C2SMovementValidationPacket p) {
         EntityState state = new EntityState(server.getOnlinePlayer(p.getPlayerUUID()));
+        state.direction = p.getDirection();
+        Vector2f a = p.getLocation();
+        Vector2f b = p.getLocation().add(p.getMovement());
+        float c = p.getMovement().x() + p.getMovement().y();
+        float d = p.getLocation().x() + p.getLocation().y();
+        float e = c + d;
 
-        System.out.println("validating... : " + p.getLocation() + " vs destination: " + p.getDestination());
-        if (p.getDestination().x() > 10f || p.getDestination().y() > 10f || (p.getDestination().x() + p.getDestination().y()) > 6.66f) {
-            state.pos = p.getLocation();
+        if (Math.abs(b.x() - a.x()) > 10f || Math.abs(b.y() - a.y()) > 10f || (Math.abs(e - d) > 6.66f)) {
+            state.pos = p.getLocation().subtract(p.getMovement());
             entities.add(state);
-            System.out.println("REJECTED PLAYER MOVEMENT " + state.pos);
+            System.out.println("REJECTED PLAYER MOVEMENT " + p.getMovement());
         } else {
-            state.pos = p.getLocation().add(p.getDestination());
+            state.pos = p.getLocation().add(p.getMovement());
             entities.add(state);
-            System.out.println("ACCEPTED player MOVEMENT " + state.pos);
+            System.out.println("ACCEPTED PLAYER MOVEMENT " + p.getMovement());
         }
     }
 
     public void validateBlockUpdate(C2SBlockUpdateValidationPacket p) {
         Vector2f pos = Coordinates.getTilePos(p.getPos().subtract(server.getOnlinePlayer(p.getUuid()).getPos()));
         if (pos.x() > 5 || pos.y() > 5 || pos.x() + pos.y() > 6) {
-            System.out.println("REJECTED OBJECT");
             return;
         }
         objects.add(p.getState());
-        System.out.println("ACCEPTED OBJECT AT: " + p.getPos() + "object pos: " + p.getState().pos);
+        System.out.println("ADDED BLOCK AT: " + p.getState().pos);
     }
 }

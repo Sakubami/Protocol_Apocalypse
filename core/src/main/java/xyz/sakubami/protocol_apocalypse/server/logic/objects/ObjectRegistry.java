@@ -2,7 +2,7 @@ package xyz.sakubami.protocol_apocalypse.server.logic.objects;
 
 import xyz.sakubami.protocol_apocalypse.server.logic.objects.container.interfaces.Chest;
 import xyz.sakubami.protocol_apocalypse.server.logic.objects.normal.Tree;
-import xyz.sakubami.protocol_apocalypse.shared.types.ObjectType;
+import xyz.sakubami.protocol_apocalypse.shared.type.ObjectType;
 
 public class ObjectRegistry {
     static {

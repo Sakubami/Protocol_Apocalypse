@@ -2,7 +2,7 @@ package xyz.sakubami.protocol_apocalypse.server.logic.world.entities.nonLivingEn
 
 import xyz.sakubami.protocol_apocalypse.server.logic.world.entities.Entity;
 import xyz.sakubami.protocol_apocalypse.server.saving.data.SerializedEntity;
-import xyz.sakubami.protocol_apocalypse.shared.types.EntityType;
+import xyz.sakubami.protocol_apocalypse.shared.type.EntityType;
 
 public abstract class NonLivingEntity extends Entity {
     private String displayName = "NULL";

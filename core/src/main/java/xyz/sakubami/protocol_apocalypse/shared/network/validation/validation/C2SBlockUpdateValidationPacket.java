@@ -24,7 +24,7 @@ public class C2SBlockUpdateValidationPacket implements ValidationPacket {
         this.uuid = uuid;
         this.pos = pos;
         this.state = state;
-        this.state.pos = Coordinates.getChunkObjectPos(pos);
+        this.state.pos = pos;
     }
 
     public C2SBlockUpdateValidationPacket() {}

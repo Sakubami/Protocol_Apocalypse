@@ -1,8 +1,6 @@
-package xyz.sakubami.protocol_apocalypse.shared.types;
+package xyz.sakubami.protocol_apocalypse.shared.type;
 
-import java.util.Arrays;
-
-public enum EntityType implements Type{
+public enum EntityType implements Type {
     PLAYER(0);
     // SHEEP(1);
 

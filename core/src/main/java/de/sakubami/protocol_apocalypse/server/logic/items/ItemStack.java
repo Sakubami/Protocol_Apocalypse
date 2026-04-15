@@ -26,6 +26,8 @@ public class ItemStack implements Serializable<SerializedItemStack> {
         return data;
     }
 
+    test
+
     @Override
     public void readData(SerializedItemStack data) {}
 }

@@ -5,7 +5,6 @@ import de.sakubami.protocol_apocalypse.client.Client;
 import de.sakubami.protocol_apocalypse.client.logic.input.InputHandler;
 import de.sakubami.protocol_apocalypse.client.rendering.textures.TextureManager;
 import de.sakubami.protocol_apocalypse.server.logic.inventory.InventoryRegistry;
-import de.sakubami.protocol_apocalypse.server.logic.items.ItemRegistry;
 import de.sakubami.protocol_apocalypse.server.logic.objects.ObjectRegistry;
 import de.sakubami.protocol_apocalypse.client.screens.TitleScreen;
 import de.sakubami.protocol_apocalypse.server.logic.world.WorldManager;

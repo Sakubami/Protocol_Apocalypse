@@ -2,9 +2,7 @@ package xyz.sakubami.firstgam.lwjgl3;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
-import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowListener;
-import xyz.sakubami.protocol_apocalypse.ProtocolApocalypse;
+import de.sakubami.protocol_apocalypse.ProtocolApocalypse;
 
 /** Launches the desktop (LWJGL3) application. */
 public class Lwjgl3Launcher {

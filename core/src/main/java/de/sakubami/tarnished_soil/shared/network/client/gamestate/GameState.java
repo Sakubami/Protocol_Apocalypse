@@ -40,6 +40,7 @@ public class GameState {
 
         // Entities
         int entityCount = in.readInt();
+        System.out.println("ENTITYCOUNT: " + entityCount);
         for (int i = 0; i < entityCount; i++) {
             EntityState entity = EntityState.read(in);
             entities.put(entity.uuid, entity);

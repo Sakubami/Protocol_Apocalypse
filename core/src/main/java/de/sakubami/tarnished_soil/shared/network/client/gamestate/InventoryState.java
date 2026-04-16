@@ -53,30 +53,29 @@ public class InventoryState implements State<InventoryState>{
         out.writeInt(type.getId());
 
         out.writeInt(items.length);
-        for (ItemState item : items) {
-            if (item == null)
-                continue;
-            item.write(out);
+        for (ItemState itemState : items) {
+            if (itemState == null)
+                itemState = new ItemState(false);
+            itemState.write(out);
         }
 
         out.writeInt(hotbar.length);
         for (ItemState itemState : hotbar) {
             if (itemState == null)
-                continue;
+                itemState = new ItemState(false);
             itemState.write(out);
         }
 
         out.writeInt(equipment.length);
         for (ItemState itemState : equipment) {
             if (itemState == null)
-                continue;
+                itemState = new ItemState(false);
             itemState.write(out);
         }
     }
 
     public static InventoryState read(DataInputStream in) throws IOException {
-        InventoryState e = new InventoryState(false);
-        e.clear = in.readBoolean();
+        InventoryState e = new InventoryState(in.readBoolean());
         e.type = InventoryType.getByID(in.readInt());
 
         int itemSize = in.readInt();

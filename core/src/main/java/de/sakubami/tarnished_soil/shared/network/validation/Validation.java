@@ -1,6 +1,10 @@
 package de.sakubami.tarnished_soil.shared.network.validation;
 
 import de.sakubami.tarnished_soil.server.Server;
+import de.sakubami.tarnished_soil.server.logic.objects.GameObject;
+import de.sakubami.tarnished_soil.server.logic.world.entities.Entity;
+import de.sakubami.tarnished_soil.server.logic.world.entities.livingentity.Player;
+import de.sakubami.tarnished_soil.server.saving.data.SerializedEntity;
 import de.sakubami.tarnished_soil.shared.network.client.gamestate.EntityState;
 import de.sakubami.tarnished_soil.shared.network.client.gamestate.GameStateBuilder;
 import de.sakubami.tarnished_soil.shared.network.client.gamestate.ObjectState;
@@ -8,8 +12,11 @@ import de.sakubami.tarnished_soil.shared.network.validation.validation.C2SBlockU
 import de.sakubami.tarnished_soil.shared.network.validation.validation.C2SMovementValidationPacket;
 import de.sakubami.tarnished_soil.shared.utils.Coordinates;
 import de.sakubami.tarnished_soil.shared.utils.Vector2f;
+import org.w3c.dom.stylesheets.LinkStyle;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 public class Validation {
@@ -18,6 +25,8 @@ public class Validation {
     private GameStateBuilder builder;
     private final Queue<EntityState> entities = new LinkedList<>();
     private final Queue<ObjectState> objects = new LinkedList<>();
+    private List<GameObject> serverObjects = new ArrayList<>();
+    private List<Entity> serverEntities = new ArrayList<>();
 
     public Validation(Server server) {
         this.server = server;
@@ -32,10 +41,19 @@ public class Validation {
         while (!objects.isEmpty()) {
             builder.updateObject(objects.poll());
         }
+
+        System.out.println("SERVER TICKCOUNT ON VALIDATION: " + server.getTickCount());
+    }
+
+    public List<GameObject> getUpdatedObjects() {
+        List<GameObject> a = serverObjects;
+        this.serverObjects = new ArrayList<>();
+        return a;
     }
 
     public void validateMovement(C2SMovementValidationPacket p) {
-        EntityState state = new EntityState(server.getOnlinePlayer(p.getPlayerUUID()));
+        EntityState state = new EntityState(server.getPlayer(p.getPlayerUUID()));
+        Player player = server.getPlayer(p.getPlayerUUID());
         state.direction = p.getDirection();
         Vector2f a = p.getLocation();
         Vector2f b = p.getLocation().add(p.getMovement());
@@ -49,17 +67,20 @@ public class Validation {
             System.out.println("REJECTED PLAYER MOVEMENT " + p.getMovement());
         } else {
             state.pos = p.getLocation().add(p.getMovement());
+            player.setPos(p.getLocation().add(p.getMovement()));
             entities.add(state);
+            serverEntities.add(player);
             System.out.println("ACCEPTED PLAYER MOVEMENT " + p.getMovement());
         }
     }
 
     public void validateBlockUpdate(C2SBlockUpdateValidationPacket p) {
-        Vector2f pos = Coordinates.getTilePos(p.getPos().subtract(server.getOnlinePlayer(p.getUuid()).getPos()));
+        Vector2f pos = Coordinates.getTilePos(p.getPos().subtract(server.getPlayer(p.getUuid()).getPos()));
         if (pos.x() > 5 || pos.y() > 5 || pos.x() + pos.y() > 6) {
             return;
         }
         objects.add(p.getState());
+        //TODO add objects here later with some sort of data warping or something
         System.out.println("ADDED BLOCK AT: " + p.getState().pos);
     }
 }

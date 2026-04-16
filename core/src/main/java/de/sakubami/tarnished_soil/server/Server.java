@@ -26,6 +26,7 @@ public class Server {
     private World world;
     private Saviour saviour;
     private final Validation validation = new Validation(this);
+    private long tickCount = 0;
 
     private final Queue<Player> pendingPlayers = new LinkedList<>();
     private final Map<Connection, UUID> connectedPlayers = new HashMap<>();
@@ -64,6 +65,8 @@ public class Server {
     }
 
     private void tick() {
+        this.tickCount += 1;
+
         for (Connection c : clients) {
             if (!c.isAlive()) {
                 disconnectClient(c);
@@ -76,14 +79,11 @@ public class Server {
             return;
 
         GameStateBuilder stateBuilder = new GameStateBuilder();
-        validation.tick(stateBuilder);
 
-        //pretty bad but update players here before broadcasting lol
-        for (Map.Entry<UUID, EntityState> state : stateBuilder.getPlayers().entrySet()) {
-            //TODO WIP REPLACE THIS
-        }
+        while (!pendingPlayers.isEmpty())
+            stateBuilder.updateEntity(new EntityState(pendingPlayers.poll()));
 
-        S2CGameStatePacket packet = world.tick(stateBuilder).compile();
+        S2CGameStatePacket packet = world.tick(validation, stateBuilder).compile();
         if (!packet.empty) {
             broadcast(packet);
         }
@@ -124,6 +124,9 @@ public class Server {
     public void connectPlayer(Connection adress, Player player) {
         this.connectedPlayers.put(this.clients.stream().filter(c -> c.getUUID().equals(adress.getUUID())).findFirst().get(), player.getUuid());
         this.world.addPlayer(player);
+        this.pendingPlayers.add(player);
     }
     public Validation getValidation() { return this.validation; }
+    public Player getPlayer(UUID uuid) { return world.getPlayer(uuid); }
+    public long getTickCount() { return this.tickCount; }
 }

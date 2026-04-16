@@ -25,6 +25,8 @@ public class InventoryState implements State<InventoryState>{
         this.items = new ItemState[data.getInventorySize()];
 
         for (int i = 0; i < items.length; i++) {
+            if (data.getItemAt(i) == null)
+                continue;
             items[i] = new ItemState(data.getItemAt(i));
         }
 
@@ -33,10 +35,14 @@ public class InventoryState implements State<InventoryState>{
             this.equipment = new ItemState[v.getEquipmentSize()];
 
             for (int i = 0; i < hotbar.length; i++) {
+                if (v.getHotbarItem(i) == null)
+                    continue;
                 this.hotbar[i] = new ItemState(v.getHotbarItem(i));
             }
 
             for (int i = 0; i < equipment.length; i++) {
+                if (v.getEquipmentItem(i) == null)
+                    continue;
                 this.equipment[i] = new ItemState(v.getEquipmentItem(i));
             }
         }
@@ -48,16 +54,22 @@ public class InventoryState implements State<InventoryState>{
 
         out.writeInt(items.length);
         for (ItemState item : items) {
+            if (item == null)
+                continue;
             item.write(out);
         }
 
         out.writeInt(hotbar.length);
         for (ItemState itemState : hotbar) {
+            if (itemState == null)
+                continue;
             itemState.write(out);
         }
 
         out.writeInt(equipment.length);
         for (ItemState itemState : equipment) {
+            if (itemState == null)
+                continue;
             itemState.write(out);
         }
     }

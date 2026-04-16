@@ -3,6 +3,7 @@ package de.sakubami.tarnished_soil.server.logic.world.entities;
 import de.sakubami.tarnished_soil.server.logic.inventory.EntityInventory;
 import de.sakubami.tarnished_soil.server.saving.data.Serializable;
 import de.sakubami.tarnished_soil.server.saving.data.SerializedEntity;
+import de.sakubami.tarnished_soil.shared.network.client.gamestate.EntityState;
 import de.sakubami.tarnished_soil.shared.type.EntityType;
 import de.sakubami.tarnished_soil.shared.utils.Vector2f;
 

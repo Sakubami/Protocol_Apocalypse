@@ -6,6 +6,7 @@ import de.sakubami.tarnished_soil.server.logic.world.entities.livingentity.Playe
 import de.sakubami.tarnished_soil.server.saving.data.Serializable;
 import de.sakubami.tarnished_soil.server.saving.data.WorldData;
 import de.sakubami.tarnished_soil.shared.network.client.gamestate.GameStateBuilder;
+import de.sakubami.tarnished_soil.shared.network.validation.Validation;
 
 import java.util.*;
 
@@ -25,8 +26,10 @@ public class World implements Serializable<WorldData> {
         chunkManager = new ChunkManager(new WorldGenerator(seed));
     }
 
-    public GameStateBuilder tick(GameStateBuilder builder) {
-        return chunkManager.handleBatches(this, players.values(), builder);
+    public GameStateBuilder tick(Validation validation, GameStateBuilder builder) {
+        GameStateBuilder v = chunkManager.handleBatches(this, players.values(), builder);
+        validation.tick(v);
+        return v;
     }
 
     @Override
@@ -56,4 +59,5 @@ public class World implements Serializable<WorldData> {
     public Map<UUID, Player> getPlayers() { return this.players; }
     public void addPlayer(Player player) { this.players.put(player.getUuid(), player); }
     public void removePlayer(UUID uuid) { this.players.remove(uuid); }
+    public Player getPlayer(UUID uuid) { return this.players.get(uuid); }
 }

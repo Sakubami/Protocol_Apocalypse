@@ -18,7 +18,7 @@ public class Client {
     private Connection connection;
     private Server localServer;
     private final ClientWorld state;
-    private Prediction prediction;
+    private final Prediction prediction;
 
     public Client() {
         this.state = new ClientWorld();

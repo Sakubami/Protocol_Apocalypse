@@ -2,11 +2,11 @@ package xyz.sakubami.firstgam.lwjgl3;
 
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
-import de.sakubami.protocol_apocalypse.ProtocolApocalypse;
+import de.sakubami.tarnished_soil.TarnishedSoil;
 
 /** Launches the desktop (LWJGL3) application. */
 public class Lwjgl3Launcher {
-    private static ProtocolApocalypse game;
+    private static TarnishedSoil game;
 
     public static void main(String[] args) {
         if (StartupHelper.startNewJvmIfRequired()) return; // This handles macOS support and helps on Windows.
@@ -14,7 +14,7 @@ public class Lwjgl3Launcher {
     }
 
     private static Lwjgl3Application createApplication() {
-        ProtocolApocalypse game2 = new ProtocolApocalypse();
+        TarnishedSoil game2 = new TarnishedSoil();
         game = game2;
         return new Lwjgl3Application(game2, getDefaultConfiguration());
     }

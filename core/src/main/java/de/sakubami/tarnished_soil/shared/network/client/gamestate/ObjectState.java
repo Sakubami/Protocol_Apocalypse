@@ -20,13 +20,13 @@ public class ObjectState implements RenderSortable<ObjectState> {
     }
 
     public ObjectState(GameObject data) {
-        this.pos = data.getTilePos();
+        this.pos = data.getPos();
         this.type = data.getType();
     }
 
     public ObjectState(GameObject data, boolean remove) {
         this.remove = remove;
-        this.pos = data.getTilePos();
+        this.pos = data.getPos();
         this.type = data.getType();
     }
 

@@ -4,7 +4,6 @@ import de.sakubami.tarnished_soil.server.Server;
 import de.sakubami.tarnished_soil.server.logic.objects.GameObject;
 import de.sakubami.tarnished_soil.server.logic.world.entities.Entity;
 import de.sakubami.tarnished_soil.server.logic.world.entities.livingentity.Player;
-import de.sakubami.tarnished_soil.server.saving.data.SerializedEntity;
 import de.sakubami.tarnished_soil.shared.network.client.gamestate.EntityState;
 import de.sakubami.tarnished_soil.shared.network.client.gamestate.GameStateBuilder;
 import de.sakubami.tarnished_soil.shared.network.client.gamestate.ObjectState;
@@ -12,7 +11,6 @@ import de.sakubami.tarnished_soil.shared.network.validation.validation.C2SBlockU
 import de.sakubami.tarnished_soil.shared.network.validation.validation.C2SMovementValidationPacket;
 import de.sakubami.tarnished_soil.shared.utils.Coordinates;
 import de.sakubami.tarnished_soil.shared.utils.Vector2f;
-import org.w3c.dom.stylesheets.LinkStyle;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -26,7 +24,7 @@ public class Validation {
     private final Queue<EntityState> entities = new LinkedList<>();
     private final Queue<ObjectState> objects = new LinkedList<>();
     private List<GameObject> serverObjects = new ArrayList<>();
-    private List<Entity> serverEntities = new ArrayList<>();
+    private List<Player> players = new ArrayList<>();
 
     public Validation(Server server) {
         this.server = server;
@@ -41,13 +39,17 @@ public class Validation {
         while (!objects.isEmpty()) {
             builder.updateObject(objects.poll());
         }
-
-        System.out.println("SERVER TICKCOUNT ON VALIDATION: " + server.getTickCount());
     }
 
-    public List<GameObject> getUpdatedObjects() {
+    public List<GameObject> pollObjects() {
         List<GameObject> a = serverObjects;
         this.serverObjects = new ArrayList<>();
+        return a;
+    }
+
+    public List<Player> pollPlayers() {
+        List<Player> a = players;
+        this.players = new ArrayList<>();
         return a;
     }
 
@@ -69,7 +71,7 @@ public class Validation {
             state.pos = p.getLocation().add(p.getMovement());
             player.setPos(p.getLocation().add(p.getMovement()));
             entities.add(state);
-            serverEntities.add(player);
+            players.add(player);
             System.out.println("ACCEPTED PLAYER MOVEMENT " + p.getMovement());
         }
     }
@@ -80,7 +82,7 @@ public class Validation {
             return;
         }
         objects.add(p.getState());
-        //TODO add objects here later with some sort of data warping or something
+        serverObjects.add(GameObject.createFromData(p.getState()));
         System.out.println("ADDED BLOCK AT: " + p.getState().pos);
     }
 }

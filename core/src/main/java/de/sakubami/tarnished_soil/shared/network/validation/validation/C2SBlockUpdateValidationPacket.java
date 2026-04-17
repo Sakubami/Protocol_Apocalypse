@@ -50,7 +50,7 @@ public class C2SBlockUpdateValidationPacket implements ValidationPacket {
 
     @Override
     public int getId() {
-        return 7;
+        return 0;
     }
 
     @Override

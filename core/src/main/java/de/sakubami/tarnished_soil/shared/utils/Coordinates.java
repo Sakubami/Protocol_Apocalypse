@@ -14,7 +14,7 @@ public class Coordinates {
         return new Vector2f(batchX, batchY);
     }
 
-    public static Vector2f getChunk(Vector2i pos) {
+    public static Vector2f getChunkByTilePos(Vector2i pos) {
         int chunkX = pos.x() / Configuration.getDefaultChunkSize();
         int chunkY = pos.y() / Configuration.getDefaultChunkSize();
         return new Vector2f(chunkX, chunkY);

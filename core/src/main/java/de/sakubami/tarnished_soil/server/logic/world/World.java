@@ -2,6 +2,8 @@ package de.sakubami.tarnished_soil.server.logic.world;
 
 import de.sakubami.tarnished_soil.server.logic.chunks.ChunkManager;
 import de.sakubami.tarnished_soil.server.logic.chunks.WorldGenerator;
+import de.sakubami.tarnished_soil.server.logic.objects.GameObject;
+import de.sakubami.tarnished_soil.server.logic.world.entities.Entity;
 import de.sakubami.tarnished_soil.server.logic.world.entities.livingentity.Player;
 import de.sakubami.tarnished_soil.server.saving.data.Serializable;
 import de.sakubami.tarnished_soil.server.saving.data.WorldData;
@@ -29,6 +31,14 @@ public class World implements Serializable<WorldData> {
     public GameStateBuilder tick(Validation validation, GameStateBuilder builder) {
         GameStateBuilder v = chunkManager.handleBatches(this, players.values(), builder);
         validation.tick(v);
+        for (Player player : validation.pollPlayers()) {
+            this.players.put(player.getUuid(), player);
+        }
+        for (GameObject object : validation.pollObjects()) {
+            if (object.checkRemoval())
+                chunkManager.removeObject(object);
+            else chunkManager.addObject(object);
+        }
         return v;
     }
 

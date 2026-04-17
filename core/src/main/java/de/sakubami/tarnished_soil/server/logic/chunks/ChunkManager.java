@@ -1,6 +1,7 @@
 package de.sakubami.tarnished_soil.server.logic.chunks;
 
 import com.google.gson.Gson;
+import de.sakubami.tarnished_soil.server.logic.objects.GameObject;
 import de.sakubami.tarnished_soil.server.saving.Saviour;
 import de.sakubami.tarnished_soil.server.logic.world.entities.Entity;
 import de.sakubami.tarnished_soil.server.logic.world.entities.livingentity.Player;
@@ -168,7 +169,11 @@ public class ChunkManager {
 
     public Map<Vector2f, Chunk> getChunks() { return chunks; }
     public Map<UUID, Entity> getEntities() { return this.entities; }
-
+    public void addObject(GameObject object) {
+        this.chunks.get(Coordinates.getChunkPos(object.getPos())).addObject(Coordinates.getChunkObjectPos(object.getPos()), object);
+        System.out.println("ADDED BLOCK AT CHUNK: " + Coordinates.getChunkPos(object.getPos()) + " AT POS: " + Coordinates.getChunkObjectPos(object.getPos()));
+    }
+    public void removeObject(GameObject object) { this.chunks.get(Coordinates.getChunkPos(object.getPos())).removeObject(Coordinates.getChunkObjectPos(object.getPos())); }
 }
 
 

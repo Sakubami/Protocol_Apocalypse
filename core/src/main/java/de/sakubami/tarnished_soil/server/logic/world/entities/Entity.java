@@ -3,7 +3,6 @@ package de.sakubami.tarnished_soil.server.logic.world.entities;
 import de.sakubami.tarnished_soil.server.logic.inventory.EntityInventory;
 import de.sakubami.tarnished_soil.server.saving.data.Serializable;
 import de.sakubami.tarnished_soil.server.saving.data.SerializedEntity;
-import de.sakubami.tarnished_soil.shared.network.client.gamestate.EntityState;
 import de.sakubami.tarnished_soil.shared.type.EntityType;
 import de.sakubami.tarnished_soil.shared.utils.Vector2f;
 
@@ -16,6 +15,7 @@ public abstract class Entity implements Serializable<SerializedEntity> {
     private final EntityType type;
     private UUID uuid;
     private final EntityInventory inventory = new EntityInventory();
+    private boolean removal = false;
 
     public Entity(EntityType type) {
         this.type = type;
@@ -64,4 +64,6 @@ public abstract class Entity implements Serializable<SerializedEntity> {
     public void setPos(Vector2f pos) { this.pos = pos; }
     public EntityType getType() { return this.type; }
     public EntityInventory getInventory() { return this.inventory; }
+    public void setForRemoval() { this.removal = true; }
+    public boolean checkRemoval() { return this.removal; }
 }

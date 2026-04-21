@@ -29,7 +29,6 @@ public class GameStateBuilder {
         entities.put(entity.uuid, entity);
 
         if (entity.type.equals(EntityType.PLAYER)) {
-            System.out.println("updated player pos at: " + entity.pos);
             players.put(entity.uuid, entity);
         }
 

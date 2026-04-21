@@ -22,12 +22,12 @@ public class WorldManager {
 
     public World selectWorld(String name) {
         if (savedWorlds.contains(name)){
-            System.out.println("FOUND WORLD1 -> " + name);
+            System.out.println("FOUND WORLD -> " + name);
             System.out.println(loadWorld(name).getName());
             return loadWorld(name);
         }
         else {
-            System.out.println("FOUND WORLD2");
+            System.out.println("CREATE WORLD");
             return createNewWorld(name);
         }
     }

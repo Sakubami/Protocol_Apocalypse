@@ -2,7 +2,9 @@ package de.sakubami.tarnished_soil.client;
 
 import de.sakubami.tarnished_soil.client.logic.ClientWorld;
 import de.sakubami.tarnished_soil.client.logic.Prediction;
+import de.sakubami.tarnished_soil.server.logic.world.entities.livingentity.Player;
 import de.sakubami.tarnished_soil.shared.Configuration;
+import de.sakubami.tarnished_soil.shared.network.client.gamestate.EntityState;
 import de.sakubami.tarnished_soil.shared.network.client.gamestate.GameState;
 import de.sakubami.tarnished_soil.server.Server;
 import de.sakubami.tarnished_soil.shared.network.Connection;
@@ -12,6 +14,7 @@ import de.sakubami.tarnished_soil.shared.network.packets.handlers.ClientPacketHa
 import de.sakubami.tarnished_soil.shared.utils.Vector2f;
 
 import java.io.IOException;
+import java.io.ObjectInputFilter;
 import java.net.Socket;
 
 public class Client {
@@ -37,6 +40,7 @@ public class Client {
         System.out.println("Connected to server: " + host + ":" + port);
 
         connection.send(new C2SPlayerConnectPacket(Configuration.getClientPlayerUUID()));
+        this.state.getPlayers().put(Configuration.getClientPlayerUUID(), new EntityState(new Player(Configuration.getClientPlayerUUID())));
     }
 
     public void update() {
@@ -61,10 +65,11 @@ public class Client {
     public boolean isHosting() { return localServer != null; }
     public void applyState(GameState state) { this.state.applyState(state);}
     public ClientWorld getCurrentWorldData() { return this.state; }
+    public EntityState getPlayer() { return state.getPlayers().get(Configuration.getClientPlayerUUID()); }
     public Vector2f getPlayerPos() {
         if (state.getPlayers().isEmpty())
             return new Vector2f(0, 0);
-        return state.getPlayers().values().stream().filter(p -> p.uuid.equals(Configuration.getClientPlayerUUID())).findFirst().get().getPos();
+        return state.getPlayers().get(Configuration.getClientPlayerUUID()).getPos();
     }
     public Prediction getPrediction() { return prediction; }
 }

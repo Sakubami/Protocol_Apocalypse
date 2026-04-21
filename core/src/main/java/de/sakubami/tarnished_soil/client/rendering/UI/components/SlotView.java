@@ -9,26 +9,27 @@ import com.badlogic.gdx.utils.Scaling;
 import de.sakubami.tarnished_soil.client.rendering.textures.TextureManager;
 import de.sakubami.tarnished_soil.client.rendering.textures.registry.ItemTexture;
 import de.sakubami.tarnished_soil.server.logic.items.ItemStack;
+import de.sakubami.tarnished_soil.shared.network.client.gamestate.ItemState;
+import de.sakubami.tarnished_soil.shared.type.ItemType;
 
 public class SlotView extends Stack {
 
-    private final Image background;
     private final Image itemImage = new Image();
 
     public SlotView(TextureRegion background) {
-        this.background = new Image(background);
+        Image background1 = new Image(background);
 
-        this.background.setScaling(Scaling.stretch);
+        background1.setScaling(Scaling.stretch);
         itemImage.setScaling(Scaling.fit);
 
-        add(this.background);
+        add(background1);
         add(itemImage);
 
         setSize(background.getRegionWidth(), background.getRegionHeight());
     }
 
-    public void setItem(ItemStack item) {
-        if (item == null) {
+    public void setItem(ItemState item) {
+        if (item.getType().equals(ItemType.PLACEHOLDER)) {
             itemImage.setDrawable(null);
             return;
         }

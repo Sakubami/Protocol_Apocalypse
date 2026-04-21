@@ -171,7 +171,6 @@ public class ChunkManager {
     public Map<UUID, Entity> getEntities() { return this.entities; }
     public void addObject(GameObject object) {
         this.chunks.get(Coordinates.getChunkPos(object.getPos())).addObject(Coordinates.getChunkObjectPos(object.getPos()), object);
-        System.out.println("ADDED BLOCK AT CHUNK: " + Coordinates.getChunkPos(object.getPos()) + " AT POS: " + Coordinates.getChunkObjectPos(object.getPos()));
     }
     public void removeObject(GameObject object) { this.chunks.get(Coordinates.getChunkPos(object.getPos())).removeObject(Coordinates.getChunkObjectPos(object.getPos())); }
 }

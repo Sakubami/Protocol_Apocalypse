@@ -25,9 +25,10 @@ public class InventoryState implements State<InventoryState>{
         this.items = new ItemState[data.getInventorySize()];
 
         for (int i = 0; i < items.length; i++) {
-            if (data.getItemAt(i) == null)
-                continue;
-            items[i] = new ItemState(data.getItemAt(i));
+            ItemState itemState = new ItemState(false);
+            if (data.getItemAt(i) != null)
+                itemState = new ItemState(data.getItemAt(i));
+            items[i] = itemState;
         }
 
         if (data instanceof EntityInventory v) {
@@ -35,15 +36,17 @@ public class InventoryState implements State<InventoryState>{
             this.equipment = new ItemState[v.getEquipmentSize()];
 
             for (int i = 0; i < hotbar.length; i++) {
-                if (v.getHotbarItem(i) == null)
-                    continue;
-                this.hotbar[i] = new ItemState(v.getHotbarItem(i));
+                ItemState itemState = new ItemState(false);
+                if (v.getHotbarItem(i) != null)
+                    itemState = new ItemState(v.getHotbarItem(i));
+                this.hotbar[i] = itemState;
             }
 
             for (int i = 0; i < equipment.length; i++) {
-                if (v.getEquipmentItem(i) == null)
-                    continue;
-                this.equipment[i] = new ItemState(v.getEquipmentItem(i));
+                ItemState itemState = new ItemState(false);
+                if (v.getEquipmentItem(i) != null)
+                    itemState = new ItemState(v.getEquipmentItem(i));
+                this.equipment[i] = itemState;
             }
         }
     }
@@ -115,4 +118,5 @@ public class InventoryState implements State<InventoryState>{
     }
 
     public void clear(boolean clear) { this.clear = clear; }
+    public int getHotbarSize() { return this.hotbar.length; }
 }

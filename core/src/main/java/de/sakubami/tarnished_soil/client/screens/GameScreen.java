@@ -11,6 +11,7 @@ import de.sakubami.tarnished_soil.client.Client;
 import de.sakubami.tarnished_soil.client.logic.input.InputHandler;
 import de.sakubami.tarnished_soil.TarnishedSoil;
 import de.sakubami.tarnished_soil.client.rendering.UI.UIManager;
+import de.sakubami.tarnished_soil.client.rendering.effects.EffectManager;
 import de.sakubami.tarnished_soil.client.rendering.world.WorldRenderer;
 
 import java.io.IOException;
@@ -41,21 +42,20 @@ public class GameScreen implements Screen {
         batch = new SpriteBatch();
 
         client = game.getClient();
-        inputHandler = game.getInputHandler();
-
-        renderer = new WorldRenderer();
-        uiManager = new UIManager();
-
-        viewport = new ScreenViewport(camera); // 1 world unit = 1 pixel
-        viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
-        game.setScreen(this);
-
 
         try {
             client.hostLocal(25556);
         } catch (IOException exception) {
             exception.printStackTrace();
         };
+
+        inputHandler = game.getInputHandler();
+        renderer = new WorldRenderer();
+        uiManager = new UIManager();
+
+        viewport = new ScreenViewport(camera); // 1 world unit = 1 pixel
+        viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+        game.setScreen(this);
     }
 
     @Override
@@ -86,8 +86,9 @@ public class GameScreen implements Screen {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         renderer.render(batch, client.getCurrentWorldData());
+        EffectManager.get().render(Gdx.graphics.getDeltaTime());
         batch.end();
-        uiManager.update(Gdx.graphics.getDeltaTime());
+        uiManager.update(Gdx.graphics.getDeltaTime(), client.getPlayer());
         uiManager.render();
     }
 

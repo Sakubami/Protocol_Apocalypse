@@ -4,17 +4,20 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import de.sakubami.tarnished_soil.client.Client;
 import de.sakubami.tarnished_soil.server.logic.inventory.EntityInventory;
 import de.sakubami.tarnished_soil.server.logic.items.ItemStack;
+import de.sakubami.tarnished_soil.shared.network.client.gamestate.EntityState;
+import de.sakubami.tarnished_soil.shared.network.client.gamestate.InventoryState;
+import de.sakubami.tarnished_soil.shared.network.client.gamestate.ItemState;
+import de.sakubami.tarnished_soil.shared.type.ItemType;
 
 public class HotbarView {
 
     private final Table root = new Table();
     private final SlotView[] slots = new SlotView[4];
-    private final EntityInventory inventory;
 
-    public HotbarView(EntityInventory inventory, TextureRegion slotBackground) {
-        this.inventory = inventory;
+    public HotbarView(TextureRegion slotBackground) {
 
         root.setFillParent(true);
         root.bottom().left().pad(20);
@@ -22,10 +25,9 @@ public class HotbarView {
         build(slotBackground);
     }
 
-    public void update() {
-        for (int i = 0; i < inventory.getHotbarSize(); i++) {
-            ItemStack item = inventory.getHotbarItem(i);
-
+    public void update(EntityState player) {
+        for (int i = 0; i < player.inventory.getHotbarSize(); i++) {
+            ItemState item = player.inventory.hotbar[i];
             slots[i].setItem(item);
         }
     }
@@ -52,9 +54,6 @@ public class HotbarView {
                 for (SlotView s : slots) {
                     if (s != null) s.setSelected(false);
                 }
-
-                System.out.println("CLICKED SLOT LOL");
-                // select this one
                 slot.setSelected(true);
             }
         });

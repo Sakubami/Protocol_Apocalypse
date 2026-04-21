@@ -37,7 +37,7 @@ public class C2SPlayerConnectPacket implements Packet {
         if (!(handler instanceof ServerPacketHandler h))
             return;
         h.server().connectPlayer(connection, new Player(uuid));
-        //TODO load player information from server
+        //TODO load player information from server OR client
     }
 
     public void addConnection(Connection connection) {

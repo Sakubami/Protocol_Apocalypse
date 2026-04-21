@@ -1,13 +1,17 @@
 package de.sakubami.tarnished_soil.client.logic;
 
 import de.sakubami.tarnished_soil.client.Client;
+import de.sakubami.tarnished_soil.server.logic.items.ItemStack;
 import de.sakubami.tarnished_soil.server.logic.objects.normal.Wall;
 import de.sakubami.tarnished_soil.shared.Configuration;
 import de.sakubami.tarnished_soil.shared.network.client.gamestate.Direction;
 import de.sakubami.tarnished_soil.shared.network.client.gamestate.EntityState;
+import de.sakubami.tarnished_soil.shared.network.client.gamestate.ItemState;
 import de.sakubami.tarnished_soil.shared.network.client.gamestate.ObjectState;
 import de.sakubami.tarnished_soil.shared.network.validation.validation.C2SBlockUpdateValidationPacket;
 import de.sakubami.tarnished_soil.shared.network.validation.validation.C2SMovementValidationPacket;
+import de.sakubami.tarnished_soil.shared.type.ItemSubType;
+import de.sakubami.tarnished_soil.shared.type.ItemType;
 import de.sakubami.tarnished_soil.shared.utils.Vector2f;
 
 public record Prediction(Client client) {
@@ -22,16 +26,14 @@ public record Prediction(Client client) {
 
     public void sendInteract(Vector2f pos) {
         EntityState state = client.getCurrentWorldData().getPlayers().get(Configuration.getClientPlayerUUID());
-        System.out.println("CLICKED: " + state.pos);
-        System.out.println("CLICKED AT: " + pos);
         float x = (float) Math.floor(Math.abs(state.pos.x() / 32 - pos.x() / 32));
         float y = (float) Math.floor(Math.abs(state.pos.y() / 32- pos.y() / 32));
-        System.out.println("X: " + x + " Y: " + y + "   and click pos " + pos);
-        System.out.println("coordinates: " + state.pos.x() / 32 + "  -  " + state.pos.y() / 32);
         if (x > 5 || y > 5 || x + y > 6.66f) {
             System.out.println("REJECTED PLAYER INTERACTION AT CLIENT LEVEL");
             return;
         }
+        client.getCurrentWorldData().getPlayers().get(Configuration.getClientPlayerUUID()).inventory.hotbar[0] = new ItemState(new ItemStack(ItemType.CONSUMABLE, ItemSubType.DEATH_BRINGER, 1));
+        System.out.println(client.getCurrentWorldData().getPlayers().get(Configuration.getClientPlayerUUID()).inventory.hotbar[0].type);
         client.getCurrentWorldData().placeBlock(pos, new ObjectState(new Wall()));
         client.sendPacket(new C2SBlockUpdateValidationPacket(Configuration.getClientPlayerUUID(), pos, new ObjectState(new Wall())));
     }

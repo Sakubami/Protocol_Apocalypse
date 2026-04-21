@@ -72,7 +72,6 @@ public class Validation {
             player.setPos(p.getLocation().add(p.getMovement()));
             entities.add(state);
             players.add(player);
-            System.out.println("ACCEPTED PLAYER MOVEMENT " + p.getMovement());
         }
     }
 
@@ -83,6 +82,5 @@ public class Validation {
         }
         objects.add(p.getState());
         serverObjects.add(GameObject.createFromData(p.getState()));
-        System.out.println("ADDED BLOCK AT: " + p.getState().pos);
     }
 }

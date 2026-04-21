@@ -37,7 +37,7 @@ public class Server {
     public void start(int port) throws IOException {
         running = true;
         serverSocket = new ServerSocket(port);
-        setupWorld("BITCH");
+        setupWorld("TEST");
         System.out.println("Server started on port " + port);
 
         new Thread(() -> {
